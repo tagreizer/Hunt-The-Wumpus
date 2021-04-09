@@ -95,14 +95,18 @@ class ReadableNode implements IReadableNode {
       return "P";
     }
     switch (this.roomType) {
-      case GOAL:
+      case WUMPUS:
         return "G";
       case START:
         return "S";
-      case GOLD:
-        return "M";
-      case THIEF:
-        return "T";
+      case PIT:
+        return "U";
+      case SUPERBAT:
+        return "B";
+      case SUPERBAT_AND_PIT:
+        return "#";
+      case HALLWAY:
+        return "+";
       default:
         return "0";
     }

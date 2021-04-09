@@ -107,9 +107,9 @@ public class MazeTest {
 
       assertEquals("P-0-0-0 \n" +
               "    |   \n" +
-              "0-0-0-T \n" +
+              "0-0-0-0 \n" +
               "|       \n" +
-              "M-M-0-G \n" +
+              "0-0-0-G \n" +
               "        \n", smallPerfectNW.toString());
       assertEquals(11, this.countEdges(smallPerfectNW));
     } catch (Exception e) {
@@ -122,15 +122,15 @@ public class MazeTest {
   @Test
   public void testNonWrappedNonPerfectMaze() {
     IMaze m = new Maze(5, 5, 14, false, 0, 0, 2, 2, 12345);
-    assertEquals("P-0-0-M-0 \n" +
+    assertEquals("P-0-0-0-0 \n" +
             "        | \n" +
-            "0-M-0-0-M \n" +
+            "0-0-0-0-0 \n" +
             "      |   \n" +
             "0-0-G-0-0 \n" +
             "| |       \n" +
-            "T-0-0-T-0 \n" +
+            "0-0-0-0-0 \n" +
             "      | | \n" +
-            "0-0-M-0-M \n" +
+            "0-0-0-0-0 \n" +
             "          \n", m.toString());
     assertEquals(26, this.countEdges(m));
   }
@@ -140,7 +140,7 @@ public class MazeTest {
     IMaze m = new Maze(3, 3, 0, true, 0, 0, 2, 2, 9874353);
     assertEquals("P-0-0-\n" +
             "| | | \n" +
-            "0-0-M-\n" +
+            "0-0-0-\n" +
             "| | | \n" +
             "0-0-G-\n" +
             "| | | \n", m.toString());
@@ -154,39 +154,36 @@ public class MazeTest {
     //Reaches the goal
     assertEquals("P-0-0-0 \n" +
             "    |   \n" +
-            "0-0-0-T \n" +
+            "0-0-0-0 \n" +
             "|       \n" +
-            "M-M-0-G \n" +
+            "0-0-0-G \n" +
             "        \n", smallPerfectNW.toString());
     assertTrue(smallPerfectNW.possiblePlayerMoves().contains(Direction.EAST));
     assertEquals(1, smallPerfectNW.possiblePlayerMoves().size());
-    assertEquals(0, smallPerfectNW.getPlayerGold());
 
     smallPerfectNW.movePlayer(Direction.EAST);
 
     assertEquals("S-P-0-0 \n" +
             "    |   \n" +
-            "0-0-0-T \n" +
+            "0-0-0-0 \n" +
             "|       \n" +
-            "M-M-0-G \n" +
+            "0-0-0-G \n" +
             "        \n", smallPerfectNW.toString());
     assertTrue(smallPerfectNW.possiblePlayerMoves()
             .containsAll(Arrays.asList(Direction.EAST, Direction.WEST)));
     assertEquals(2, smallPerfectNW.possiblePlayerMoves().size());
-    assertEquals(0, smallPerfectNW.getPlayerGold());
 
     smallPerfectNW.movePlayer(Direction.EAST);
 
     assertEquals("S-0-P-0 \n" +
             "    |   \n" +
-            "0-0-0-T \n" +
+            "0-0-0-0 \n" +
             "|       \n" +
-            "M-M-0-G \n" +
+            "0-0-0-G \n" +
             "        \n", smallPerfectNW.toString());
     assertTrue(smallPerfectNW.possiblePlayerMoves()
             .containsAll(Arrays.asList(Direction.EAST, Direction.WEST, Direction.SOUTH)));
     assertEquals(3, smallPerfectNW.possiblePlayerMoves().size());
-    assertEquals(0, smallPerfectNW.getPlayerGold());
     smallPerfectNW.movePlayer(Direction.EAST);
     smallPerfectNW.movePlayer(Direction.WEST);
 
@@ -194,45 +191,45 @@ public class MazeTest {
 
     assertEquals("S-0-0-0 \n" +
             "    |   \n" +
-            "0-0-P-T \n" +
+            "0-0-P-0 \n" +
             "|       \n" +
-            "M-M-0-G \n" +
+            "0-0-0-G \n" +
             "        \n", smallPerfectNW.toString());
     assertTrue(smallPerfectNW.possiblePlayerMoves()
             .containsAll(Arrays.asList(Direction.EAST, Direction.WEST, Direction.NORTH)));
     assertEquals(3, smallPerfectNW.possiblePlayerMoves().size());
-    assertEquals(0, smallPerfectNW.getPlayerGold());
+
 
     smallPerfectNW.movePlayer(Direction.WEST);
     smallPerfectNW.movePlayer(Direction.WEST);
-    assertEquals(0, smallPerfectNW.getPlayerGold());
+
     smallPerfectNW.movePlayer(Direction.SOUTH);
-    assertEquals(10, smallPerfectNW.getPlayerGold());
+
     assertEquals("S-0-0-0 \n" +
             "    |   \n" +
-            "0-0-0-T \n" +
+            "0-0-0-0 \n" +
             "|       \n" +
-            "P-M-0-G \n" +
+            "P-0-0-G \n" +
             "        \n", smallPerfectNW.toString());
 
     smallPerfectNW.movePlayer(Direction.EAST);
-    assertEquals(20, smallPerfectNW.getPlayerGold());
+
     smallPerfectNW.movePlayer(Direction.WEST);
     smallPerfectNW.movePlayer(Direction.EAST);
     smallPerfectNW.movePlayer(Direction.WEST);
-    assertEquals(20, smallPerfectNW.getPlayerGold());
+
     smallPerfectNW.movePlayer(Direction.NORTH);
     smallPerfectNW.movePlayer(Direction.EAST);
     smallPerfectNW.movePlayer(Direction.EAST);
-    assertEquals(20, smallPerfectNW.getPlayerGold());
+
     smallPerfectNW.movePlayer(Direction.EAST);
-    assertEquals(18, smallPerfectNW.getPlayerGold());
+
 
     assertEquals("S-0-0-0 \n" +
             "    |   \n" +
             "0-0-0-P \n" +
             "|       \n" +
-            "M-M-0-G \n" +
+            "0-0-0-G \n" +
             "        \n", smallPerfectNW.toString());
     assertFalse(smallPerfectNW.isGameOver());
     smallPerfectNW.movePlayer(Direction.WEST);
@@ -240,17 +237,17 @@ public class MazeTest {
     smallPerfectNW.movePlayer(Direction.WEST);
     smallPerfectNW.movePlayer(Direction.SOUTH);
     smallPerfectNW.movePlayer(Direction.EAST);
-    assertEquals(18, smallPerfectNW.getPlayerGold());
+
 
 
     assertEquals("S-0-0-0 \n" +
             "    |   \n" +
-            "0-0-0-T \n" +
+            "0-0-0-0 \n" +
             "|       \n" +
-            "M-P-0-G \n" +
+            "0-P-0-G \n" +
             "        \n", smallPerfectNW.toString());
 
-    assertEquals(18, smallPerfectNW.getPlayerGold());
+
 
     assertFalse(smallPerfectNW.isGameOver());
     smallPerfectNW.movePlayer(Direction.EAST);
@@ -259,9 +256,9 @@ public class MazeTest {
 
     assertEquals("S-0-0-0 \n" +
             "    |   \n" +
-            "0-0-0-T \n" +
+            "0-0-0-0 \n" +
             "|       \n" +
-            "M-M-0-P \n" +
+            "0-0-0-P \n" +
             "        \n", smallPerfectNW.toString());
     assertTrue(smallPerfectNW.isGameOver());
 

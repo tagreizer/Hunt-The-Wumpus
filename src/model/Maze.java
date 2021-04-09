@@ -16,7 +16,9 @@ public class Maze implements IMaze {
   private final IWritableNode[][] board;
   private final List<IEdge> edges;
   private final Player player1;
-  boolean isGameOver;
+  private boolean isGameOver;
+  private boolean victory;
+  private long seed;
 
 
   /**
@@ -87,6 +89,25 @@ public class Maze implements IMaze {
    */
   public Maze(int rows, int cols, int wallsRemaining, boolean isWrapping,
               int sRow, int sCol, int gRow, int gCol, long seed) {
+    this(rows, cols, wallsRemaining, isWrapping, sRow, sCol, gRow, gCol, 0, 0,seed );
+
+  }
+
+  /**
+   * Generates a Maze using a given seed.
+   *
+   * @param rows           the rows in the maze
+   * @param cols           the cols in the maze
+   * @param isWrapping     whether or not the maze wraps.
+   * @param wallsRemaining the walls remaining when the maze is built
+   * @param sRow           the starting point row
+   * @param sCol           the starting point col
+   * @param gRow           the goal row
+   * @param gCol           the goal col
+   * @param seed           the seed for the maze to build its edges from
+   */
+  public Maze(int rows, int cols, int wallsRemaining, boolean isWrapping,
+              int sRow, int sCol, int gRow, int gCol, int percentBats, int percentPits, long seed) {
     if (rows < 1 || cols < 1 || rows + cols == 2) {
       throw new IllegalArgumentException("You must have a maze of more than 1 room");
     }
@@ -96,6 +117,9 @@ public class Maze implements IMaze {
     }
     if (sRow == gRow && sCol == gCol) {
       throw new IllegalArgumentException("Start and goal cannot be the same");
+    }
+    if (percentBats < 0 || percentPits < 0 || percentBats > 100 || percentPits > 100) {
+      throw new IllegalArgumentException("Bat and Pit percentages must be valid percentage values");
     }
     this.board = new IWritableNode[rows][cols];
     this.edges = new ArrayList<>();
@@ -118,14 +142,16 @@ public class Maze implements IMaze {
     this.assignEdges(edgeWorkList, egdesNeeded);
 
     this.board[sRow][sCol].setRoomType(RoomType.START);
-    this.board[gRow][gCol].setRoomType(RoomType.GOAL);
+    this.board[gRow][gCol].setRoomType(RoomType.WUMPUS);
 
-    this.assignRoomTypeToMaze(RoomType.GOLD, 20, seed);
-    this.assignRoomTypeToMaze(RoomType.THIEF, 10, seed);
+    this.assignRoomTypeToMaze(RoomType.SUPERBAT, percentBats, seed);
+    this.assignRoomTypeToMaze(RoomType.PIT, percentPits, seed);
 
     this.player1 = new Player(sRow, sCol);
     this.board[sRow][sCol].shouldIContainPlayer(true);
     this.isGameOver = false;
+    this.victory = false;
+    this.seed = seed;
 
 
   }
@@ -338,21 +364,37 @@ public class Maze implements IMaze {
     }
 
     switch (curRoom) {
-      case GOAL:
+      case WUMPUS:
         this.isGameOver = true;
+        this.victory = true;
         return;
       case THIEF:
         this.player1.encounterThief();
         return;
-      case GOLD:
-        this.player1.pickUpGold(10);
-        return;
+      case PIT:
+        this.isGameOver = true;
       default:
         //nonspecial rooms do nothing;
 
 
     }
 
+  }
+
+  private void telePlayer() {
+      boolean foundLoc = false;
+      Random r = new Random(this.seed);
+
+
+      while (!foundLoc) {
+          int rowLoc = r.nextInt(this.board.length) - 1;
+          int colLoc = r.nextInt(this.board[0].length) - 1;
+          if (this.board[rowLoc][colLoc].getRoomType() == RoomType.EMPTY
+                  || this.board[rowLoc][colLoc].getRoomType() == RoomType.START) {
+              this.player1.setPosition(rowLoc, colLoc);
+              foundLoc = true;
+          }
+      }
   }
 
   @Override
