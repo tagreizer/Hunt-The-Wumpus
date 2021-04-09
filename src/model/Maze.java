@@ -373,6 +373,15 @@ public class Maze implements IMaze {
         return;
       case PIT:
         this.isGameOver = true;
+        return;
+      case SUPERBAT:
+        this.telePlayer();
+        return;
+      case SUPERBAT_AND_PIT:
+        if (!this.telePlayer()) {
+          this.isGameOver = true;
+        }
+
       default:
         //nonspecial rooms do nothing;
 
@@ -381,20 +390,24 @@ public class Maze implements IMaze {
 
   }
 
-  private void telePlayer() {
+  private boolean telePlayer() {
       boolean foundLoc = false;
-      Random r = new Random(this.seed);
+      Random r = new Random(this.seed* this.player1.getPosition().getRow()
+              * this.player1.getPosition().getCol());
 
-
+    if (r.nextBoolean()) {
+      return false;
+    }
       while (!foundLoc) {
           int rowLoc = r.nextInt(this.board.length) - 1;
           int colLoc = r.nextInt(this.board[0].length) - 1;
-          if (this.board[rowLoc][colLoc].getRoomType() == RoomType.EMPTY
-                  || this.board[rowLoc][colLoc].getRoomType() == RoomType.START) {
+          if (!Arrays.asList(RoomType.SUPERBAT, RoomType.SUPERBAT_AND_PIT, RoomType.HALLWAY)
+                  .contains(this.board[rowLoc][colLoc].getRoomType())) {
               this.player1.setPosition(rowLoc, colLoc);
               foundLoc = true;
           }
       }
+    return true;
   }
 
   @Override
