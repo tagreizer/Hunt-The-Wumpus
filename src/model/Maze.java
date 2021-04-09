@@ -316,8 +316,9 @@ public class Maze implements IMaze {
       this.board[playerLoc.getRow()][playerLoc.getCol()].shouldIContainPlayer(false);
       this.player1.move(direction);
       playerLoc = handleWrap();
-      this.board[playerLoc.getRow()][playerLoc.getCol()].shouldIContainPlayer(true);
       this.roomEffect(this.board[playerLoc.getRow()][playerLoc.getCol()]);
+      this.board[playerLoc.getRow()][playerLoc.getCol()].shouldIContainPlayer(true);
+
     } else {
       throw new IllegalArgumentException("The player cannot move in that direction");
     }
