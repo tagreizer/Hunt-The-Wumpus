@@ -10,7 +10,6 @@ import java.util.List;
  */
 class ReadableNode implements IReadableNode {
   protected final Position position;
-  protected boolean hasPlayer;
   protected RoomType roomType;
   protected final List<Direction> connectedDirections;
   protected boolean visited;
@@ -38,11 +37,14 @@ class ReadableNode implements IReadableNode {
   protected ReadableNode(int row, int col, List<Direction> connectedDirections,
                          boolean hasPlayer, RoomType roomType, boolean visited) {
     this.position = new Position(row, col);
-    this.hasPlayer = hasPlayer;
     this.roomType = roomType;
     this.connectedDirections = connectedDirections;
     this.visited = visited;
     this.attributes = new ArrayList<>();
+
+    if (hasPlayer) {
+      this.attributes.add(RoomAttribute.HAS_PLAYER1);
+    }
   }
 
   @Override
@@ -77,7 +79,7 @@ class ReadableNode implements IReadableNode {
   @Override
   public IReadableNode copy() {
     return new ReadableNode(this.position.getRow(), this.position.getCol(),
-            this.getConnectedDirs(), this.hasPlayer, this.roomType, this.visited);
+            this.getConnectedDirs(), this.attributes.contains(RoomAttribute.HAS_PLAYER1), this.roomType, this.visited);
   }
 
   @Override

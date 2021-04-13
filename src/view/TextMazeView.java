@@ -2,6 +2,7 @@ package view;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -19,6 +20,7 @@ public class TextMazeView implements IMazeView {
   private List<Direction> possibleMoves;
   private List<PlayerEffect> effects;
   private final Scanner scanner;
+  private boolean shouldIShowEffects;
 
   public TextMazeView(Appendable output, Readable input) {
     this.listener = null;
@@ -27,6 +29,7 @@ public class TextMazeView implements IMazeView {
     this.playerPos = null;
     this.possibleMoves = new ArrayList<>();
     this.scanner = new Scanner(input);
+    this.shouldIShowEffects = true;
   }
 
 
@@ -38,8 +41,11 @@ public class TextMazeView implements IMazeView {
     }
 
     StringBuilder builder = new StringBuilder();
-    builder.append(this.playerEffectMsg());
-    IReadableNode playerNode = this.nodes.get(playerPos.getRow()).get(playerPos.getCol());
+    if (this.shouldIShowEffects) {
+      builder.append(this.playerEffectMsg());
+    }
+
+    //IReadableNode playerNode = this.nodes.get(playerPos.getRow()).get(playerPos.getCol());
 
     builder.append("You are in cave (");
     builder.append(playerPos.getRow());
@@ -52,18 +58,43 @@ public class TextMazeView implements IMazeView {
       builder.append(dir.toString());
       builder.append(", ");
     }
-    builder.substring(0, builder.length() - 2);
+   builder.delete(builder.length()-2, builder.length());
+
     builder.append("\nShoot or Move (S-M)?:");
 
-    try {
-      output.append(builder.toString());
-    } catch (IOException e) {
-      throw new IllegalStateException("Output has close");
-    }
+    this.outputString(builder.toString());
 
     this.decideDirection(this.shouldIMove());
+    this.shouldIShowEffects = false;
 
+  }
 
+  @Override
+  public void animateGameOver() {
+
+    String finalString = this.playerEffectMsg() +
+            this.decideGameOverMsg();
+    this.outputString(finalString);
+
+  }
+
+  private String decideGameOverMsg() {
+    StringBuilder builder = new StringBuilder();
+    for (PlayerEffect effect : this.effects) {
+      switch (effect) {
+        case FELL_INTO_PIT:
+        case RAN_INTO_WUMPUS:
+        case NO_ARROWS:
+          builder.append("Game Over!\nBetter luck next time!");
+          break;
+
+        case SHOT_WUMPUS:
+          builder.append("You Win!\nCongratulations!");
+          break;
+
+      }
+    }
+    return builder.toString();
   }
 
   private String playerEffectMsg() {
@@ -102,42 +133,34 @@ public class TextMazeView implements IMazeView {
 
   private void badDirectionDecided() {
     StringBuilder builder = new StringBuilder();
+    builder.append("Please enter the first letter of: ");
     for (Direction dir : this.possibleMoves) {
       builder.append(dir.toString());
       builder.append(", ");
     }
-    builder.substring(0, builder.length() - 2);
-    try {
-      output.append("Please enter the first letter of: ");
-      output.append(builder.toString());
-      output.append("\n");
-    } catch (IOException e) {
-      throw new IllegalStateException("Out put has closed");
-    }
+    builder.delete(builder.length() - 2,builder.length() );
+    builder.append("\n");
+    this.outputString(builder.toString());
 
   }
 
   private void decideDirection(boolean moving) {
-    boolean wrongInput = false;
+
     this.badDirectionDecided();
 
     while (scanner.hasNext()) {
-      if (wrongInput) {
-        this.badDirectionDecided();
-      }
+
 
       switch (scanner.next().toUpperCase()) {
         case "N":
           if (possibleMoves.contains(Direction.NORTH)) {
             if (moving) {
               this.listener.movePlayer(Direction.NORTH);
-              return;
             } else {
-              //shoot
+              this.listener.shootArrow(Direction.NORTH,this.decideDistance());
             }
-            wrongInput = false;
-          } else {
-            wrongInput = true;
+            return;
+
           }
 
           break;
@@ -145,50 +168,66 @@ public class TextMazeView implements IMazeView {
           if (possibleMoves.contains(Direction.SOUTH)) {
             if (moving) {
               this.listener.movePlayer(Direction.SOUTH);
-              return;
             } else {
-              //shoot
-            } wrongInput = false;
-          } else {
-            wrongInput = true;
+              this.listener.shootArrow(Direction.SOUTH,this.decideDistance());
+            }
+            return;
+
           }
           break;
         case "E":
           if (possibleMoves.contains(Direction.EAST)) {
             if (moving) {
               this.listener.movePlayer(Direction.EAST);
-              return;
             } else {
-              //shoot
-            } wrongInput = false;
-          } else {
-            wrongInput = true;
+              this.listener.shootArrow(Direction.EAST,this.decideDistance());
+            }
+            return;
+
           }
           break;
         case "W":
           if (possibleMoves.contains(Direction.WEST)) {
             if (moving) {
               this.listener.movePlayer(Direction.WEST);
-              return;
             } else {
-              //shoot
-            } wrongInput = false;
-          } else {
-            wrongInput = true;
+              this.listener.shootArrow(Direction.WEST,this.decideDistance());
+            }
+            return;
+
           }
           break;
         default:
-          wrongInput = true;
+
+          break;
 
       }
+      this.badDirectionDecided();
     }
 
 
   }
 
+  private int decideDistance() {
+    this.outputString("How far will you shoot your arrow?\nPlease enter an integer value: ");
+    int num;
+    while (true) {
+      while (scanner.hasNext()) {
+        try {
+          num = scanner.nextInt();
+          return num;
+        } catch (InputMismatchException e) {
+          this.outputString("Please enter an valid integer: ");
+        }
+
+
+      }
+    }
+  }
+
   private boolean shouldIMove() {
     while (true) {
-      try {
+
         while (scanner.hasNext()) {
           switch (scanner.next().toUpperCase()) {
             case "M":
@@ -196,12 +235,10 @@ public class TextMazeView implements IMazeView {
             case "S":
               return false;
             default:
-              output.append("Please enter S for Shoot and M for Move.\n");
+              this.outputString("Please enter S for Shoot and M for Move.\n");
           }
         }
-      } catch (IOException e) {
-        throw new IllegalStateException("Out put has closed");
-      }
+
     }
   }
 
@@ -231,15 +268,19 @@ public class TextMazeView implements IMazeView {
   @Override
   public void setPlayerEffects(List<PlayerEffect> effects) {
     this.effects = effects;
+    this.shouldIShowEffects = true;
   }
 
-  @Override
-  public void displayError(String error) {
+  private void outputString(String msg) {
     try {
-      this.output.append(error).append("\n");
+      this.output.append(msg).append("\n");
     } catch (IOException e) {
       throw new IllegalStateException("Output has closed");
     }
+  }
+  @Override
+  public void displayError(String error) {
+    this.outputString(error);
 
 
   }

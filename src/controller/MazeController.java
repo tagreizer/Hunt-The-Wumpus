@@ -31,9 +31,15 @@ public class MazeController implements IMazeController, EventController{
         this.view.setPlayerEffects(this.model.getRecentEffects());
 
         this.modelChanged = false;
+
+        if (this.model.isGameOver()) {
+          break;
+        }
       }
       this.view.animate();
+
     }
+    this.view.animateGameOver();
 
 
   }
@@ -48,7 +54,7 @@ public class MazeController implements IMazeController, EventController{
       this.view.displayError("Illegal move, please try again in a valid direction.");
 
     } catch (IllegalStateException e) {
-      this.view.displayError("You should be able to move the game is over.");
+      this.view.displayError("You should not be able to move the game is over.");
     }
 
   }
@@ -59,7 +65,7 @@ public class MazeController implements IMazeController, EventController{
       this.model.fireArrow(dir, distance);
       this.modelChanged = true;
     } catch (IllegalArgumentException e) {
-      this.view.displayError("Please enter a valid direction");
+      this.view.displayError(e.getMessage());
 
     }
   }

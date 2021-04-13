@@ -12,6 +12,8 @@ public interface IMazeView {
 
   void animate();
 
+  void animateGameOver();
+
   void setEventController(EventController listener);
 
   void setNodes(List<List<IReadableNode>> nodes);

@@ -318,6 +318,32 @@ public class Maze implements IMaze {
     }
   }
 
+  private List<IWritableNode> getConnectedRooms(IWritableNode node) {
+    List<IWritableNode> connectedRooms = new ArrayList<>();
+    for (Direction dir : node.getConnectedDirs()) {
+      switch (dir) {
+        case NORTH:
+          connectedRooms.add(this.getConnectedNodeHelp(
+                  this.handleWrap(
+                          new Position(node.getPosition().getRow(), node.getPosition().getCol()))));
+          break;
+        case SOUTH:
+          break;
+        case EAST:
+          break;
+        case WEST:
+          break;
+      }
+    }
+
+    return connectedRooms;
+  }
+
+  private IWritableNode getConnectedNodeHelp(Position position) {
+
+    return null;
+  }
+
 
   /**
    * Provides a way to view the maze for debuging purposes.
@@ -517,6 +543,9 @@ public class Maze implements IMaze {
   public void fireArrow(Direction dir, int distance) {
     if (this.isGameOver) {
       return;
+    }
+    if (distance < 1) {
+      throw new IllegalArgumentException("You must shoot an arrow greater than 1 units far");
     }
     if (dir == null) {
       throw new IllegalArgumentException("No null directions");
