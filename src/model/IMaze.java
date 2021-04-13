@@ -46,10 +46,9 @@ public interface IMaze {
    */
   boolean isGameOver();
 
-  /**
-   * Returns the players gold amount.
-   *
-   * @return the players gold amount.
-   */
-  int getPlayerGold();
+  List<PlayerEffect> getRecentEffects();
+
+  void fireArrow(Direction dir, int distance);
+
+
 }

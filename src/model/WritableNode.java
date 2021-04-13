@@ -60,6 +60,11 @@ class WritableNode extends ReadableNode implements IWritableNode {
     this.visited = true;
   }
 
+  @Override
+  public void addAttribute(RoomAttribute attribute) {
+    this.attributes.add(attribute);
+  }
+
 
   @Override
   public void setLeader(IWritableNode node) {

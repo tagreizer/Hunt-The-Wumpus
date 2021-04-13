@@ -8,17 +8,19 @@ package model;
  */
 class Player {
   private Position position;
-  private int gold;
+  private int arrowAmount;
+
 
   /**
    * Creates a player at the specified location.
-   *
-   * @param row the row the player starts at.
+   *  @param row the row the player starts at.
    * @param col the col the player starts at.
+   * @param arrowCount
    */
-  Player(int row, int col) {
+  Player(int row, int col, int arrowCount) {
     this.position = new Position(row, col);
-    this.gold = 0;
+    this.arrowAmount = arrowCount;
+
   }
 
   /**
@@ -67,28 +69,12 @@ class Player {
 
   }
 
-  /**
-   * Represents encountering the Thief, this removes 10% of the players gold.
-   */
-  void encounterThief() {
-    this.gold = this.gold - (this.gold / 10);
+  void removeArrow() {
+    this.arrowAmount--;
   }
 
-  /**
-   * Represents picking up gold.
-   *
-   * @param gold the amount of gold picked up
-   */
-  void pickUpGold(int gold) {
-    this.gold += gold;
-  }
-
-  /**
-   * Returns the players gold amount.
-   *
-   * @return the players gold amount.
-   */
-  int getGold() {
-    return this.gold;
+  int getArrowAmount() {
+    return this.arrowAmount;
   }
 }
+

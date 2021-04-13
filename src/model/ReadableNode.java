@@ -14,7 +14,7 @@ class ReadableNode implements IReadableNode {
   protected RoomType roomType;
   protected final List<Direction> connectedDirections;
   protected boolean visited;
-
+  protected final List<RoomAttribute> attributes;
   /**
    * Creates a readable node at the given position, with no connections and as an empty room.
    *
@@ -42,6 +42,7 @@ class ReadableNode implements IReadableNode {
     this.roomType = roomType;
     this.connectedDirections = connectedDirections;
     this.visited = visited;
+    this.attributes = new ArrayList<>();
   }
 
   @Override
@@ -90,8 +91,13 @@ class ReadableNode implements IReadableNode {
   }
 
   @Override
+  public List<RoomAttribute> getRoomAttributes() {
+    return List.copyOf(this.attributes);
+  }
+
+  @Override
   public String debugPrint() {
-    if (this.hasPlayer) {
+    if (this.attributes.contains(RoomAttribute.HAS_PLAYER1)) {
       return "P";
     }
     switch (this.roomType) {

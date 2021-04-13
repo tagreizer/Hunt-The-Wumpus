@@ -17,8 +17,8 @@ public class Maze implements IMaze {
   private final List<IEdge> edges;
   private final Player player1;
   private boolean isGameOver;
-  private boolean victory;
-  private long seed;
+  private final long seed;
+  private final List<PlayerEffect> recentEffects;
 
 
   /**
@@ -89,7 +89,28 @@ public class Maze implements IMaze {
    */
   public Maze(int rows, int cols, int wallsRemaining, boolean isWrapping,
               int sRow, int sCol, int gRow, int gCol, long seed) {
-    this(rows, cols, wallsRemaining, isWrapping, sRow, sCol, gRow, gCol, 0, 0,seed );
+    this(rows, cols, wallsRemaining, isWrapping, sRow, sCol, gRow, gCol, 0, 0, seed, 2);
+
+  }
+
+  /**
+   * Generates a Maze using a given seed.
+   *
+   * @param rows       the rows in the maze
+   * @param cols       the cols in the maze
+   * @param isWrapping whether or not the maze wraps.
+   * @param sRow       the starting point row
+   * @param sCol       the starting point col
+   * @param gRow       the goal row
+   * @param gCol       the goal col
+   * @param seed       the seed for the maze to build its edges from
+   * @param arrowCount
+   */
+  public Maze(int rows, int cols, boolean isWrapping,
+              int sRow, int sCol, int gRow, int gCol, int percentBats, int percentPits, long seed, int arrowCount) {
+    this(rows, cols, isWrapping ? (rows * cols) + 1
+                    : ((cols * (rows - 1)) + (rows * (cols - 1))) - (rows * cols) + 1,
+            isWrapping, sRow, sCol, gRow, gCol, percentBats, percentPits, seed, arrowCount);
 
   }
 
@@ -98,16 +119,17 @@ public class Maze implements IMaze {
    *
    * @param rows           the rows in the maze
    * @param cols           the cols in the maze
-   * @param isWrapping     whether or not the maze wraps.
    * @param wallsRemaining the walls remaining when the maze is built
+   * @param isWrapping     whether or not the maze wraps.
    * @param sRow           the starting point row
    * @param sCol           the starting point col
    * @param gRow           the goal row
    * @param gCol           the goal col
    * @param seed           the seed for the maze to build its edges from
+   * @param arrowCount
    */
   public Maze(int rows, int cols, int wallsRemaining, boolean isWrapping,
-              int sRow, int sCol, int gRow, int gCol, int percentBats, int percentPits, long seed) {
+              int sRow, int sCol, int gRow, int gCol, int percentBats, int percentPits, long seed, int arrowCount) {
     if (rows < 1 || cols < 1 || rows + cols == 2) {
       throw new IllegalArgumentException("You must have a maze of more than 1 room");
     }
@@ -120,6 +142,9 @@ public class Maze implements IMaze {
     }
     if (percentBats < 0 || percentPits < 0 || percentBats > 100 || percentPits > 100) {
       throw new IllegalArgumentException("Bat and Pit percentages must be valid percentage values");
+    }
+    if (arrowCount < 1) {
+      throw new IllegalArgumentException("A player must have a positive amount of arrows");
     }
     this.board = new IWritableNode[rows][cols];
     this.edges = new ArrayList<>();
@@ -141,17 +166,20 @@ public class Maze implements IMaze {
 
     this.assignEdges(edgeWorkList, egdesNeeded);
 
+
     this.board[sRow][sCol].setRoomType(RoomType.START);
     this.board[gRow][gCol].setRoomType(RoomType.WUMPUS);
+
+    this.convertToHallways();
 
     this.assignRoomTypeToMaze(RoomType.SUPERBAT, percentBats, seed);
     this.assignRoomTypeToMaze(RoomType.PIT, percentPits, seed);
 
-    this.player1 = new Player(sRow, sCol);
+    this.player1 = new Player(sRow, sCol, arrowCount);
     this.board[sRow][sCol].shouldIContainPlayer(true);
     this.isGameOver = false;
-    this.victory = false;
     this.seed = seed;
+    this.recentEffects = new ArrayList<>();
 
 
   }
@@ -218,7 +246,7 @@ public class Maze implements IMaze {
 
     for (int r = 0; r < this.board.length; r++) {
       for (int c = 0; c < this.board[r].length - 1; c++) {
-        IEdge edge = new Edge(rand.nextInt(30), this.board[r][c],
+        IEdge edge = new Edge(rand.nextInt(300), this.board[r][c],
                 this.board[r][c + 1], Direction.EAST);
 
         edgeWorkList.add(edge);
@@ -231,12 +259,12 @@ public class Maze implements IMaze {
       int maxRow = this.board.length - 1;
       int maxCol = this.board[maxRow].length - 1;
       for (int c = 0; c < this.board[maxRow].length; c++) {
-        IEdge edge = new Edge(rand.nextInt(30), this.board[maxRow][c],
+        IEdge edge = new Edge(rand.nextInt(300), this.board[maxRow][c],
                 this.board[0][c], Direction.SOUTH);
         edgeWorkList.add(edge);
       }
       for (int r = 0; r < this.board.length; r++) {
-        IEdge edge = new Edge(rand.nextInt(30), this.board[r][maxCol],
+        IEdge edge = new Edge(rand.nextInt(300), this.board[r][maxCol],
                 this.board[r][0], Direction.EAST);
         edgeWorkList.add(edge);
       }
@@ -248,6 +276,17 @@ public class Maze implements IMaze {
 
     return edgeWorkList;
 
+  }
+
+  private void convertToHallways() {
+    for (int r = 0; r < this.board.length; r++) {
+      for (int c = 0; c < this.board[r].length - 1; c++) {
+        if (this.board[r][c].getRoomType() == RoomType.EMPTY && this.board[r][c].getConnectedDirs().size() == 2) {
+          this.board[r][c].setRoomType(RoomType.HALLWAY);
+
+        }
+      }
+    }
   }
 
   /**
@@ -265,12 +304,15 @@ public class Maze implements IMaze {
     double workingWeight = 1.0 / ((double) weightPercentage / 100);
     int roomsNeeded = totalNodeAmount / (int) workingWeight;
     nodes = this.getWriteableNodes();
-    Collections.shuffle(nodes, new Random(seed));
+    Collections.shuffle(nodes, new Random(seed * roomType.ordinal()));
 
     while (roomsNeeded > 0 && nodes.size() > 0) {
       IWritableNode node = nodes.remove(0);
       if (node.getRoomType() == RoomType.EMPTY) {
         node.setRoomType(roomType);
+        roomsNeeded--;
+      } else if (node.getRoomType() == roomType.getCounterPart()) {
+        node.setRoomType(RoomType.SUPERBAT_AND_PIT);
         roomsNeeded--;
       }
     }
@@ -278,8 +320,7 @@ public class Maze implements IMaze {
 
 
   /**
-   * Provides a way to view the maze for debuging purposes, will be removed once views are
-   * implemented.
+   * Provides a way to view the maze for debuging purposes.
    *
    * @return the string representation of the maze.
    */
@@ -306,8 +347,10 @@ public class Maze implements IMaze {
     return node.getConnectedDirs();
   }
 
+
   @Override
   public void movePlayer(Direction direction) {
+    this.recentEffects.clear();
     if (this.isGameOver()) {
       throw new IllegalStateException("The game is over");
     }
@@ -315,9 +358,13 @@ public class Maze implements IMaze {
       Position playerLoc = player1.getPosition();
       this.board[playerLoc.getRow()][playerLoc.getCol()].shouldIContainPlayer(false);
       this.player1.move(direction);
-      playerLoc = handleWrap();
-      this.roomEffect(this.board[playerLoc.getRow()][playerLoc.getCol()]);
+
+      playerLoc = handleWrap(player1.getPosition());
+      player1.setPosition(playerLoc.getRow(), playerLoc.getCol());
+      this.roomEffect(this.board[playerLoc.getRow()][playerLoc.getCol()], direction);
+      playerLoc = player1.getPosition();
       this.board[playerLoc.getRow()][playerLoc.getCol()].shouldIContainPlayer(true);
+
 
     } else {
       throw new IllegalArgumentException("The player cannot move in that direction");
@@ -326,61 +373,71 @@ public class Maze implements IMaze {
   }
 
   /**
-   * Handles the player moving over wrapped edges in a maze. Mutates nothing when the player moves
-   * normally.
+   * Handles a position moving over wrapped edges in a maze. Returns the new position.
    *
-   * @return the players location.
+   * @return the new position after wrapping
    */
-  private Position handleWrap() {
-    Position playerLoc = player1.getPosition();
+  private Position handleWrap(Position position) {
 
-    if (playerLoc.getRow() >= this.board.length) {
-      player1.setPosition(0, playerLoc.getCol());
+
+    if (position.getRow() >= this.board.length) {
+      return new Position(0, position.getCol());
     }
-    if (playerLoc.getCol() >= this.board[0].length) {
-      player1.setPosition(playerLoc.getRow(), 0);
+    if (position.getCol() >= this.board[0].length) {
+      return new Position(position.getRow(), 0);
     }
-    if (playerLoc.getRow() < 0) {
-      player1.setPosition(this.board.length - 1, playerLoc.getCol());
+    if (position.getRow() < 0) {
+      return new Position(this.board.length - 1, position.getCol());
     }
-    if (playerLoc.getCol() < 0) {
-      player1.setPosition(playerLoc.getRow(), this.board[0].length - 1);
+    if (position.getCol() < 0) {
+      return new Position(position.getRow(), this.board[0].length - 1);
     }
-    return player1.getPosition();
+    return position;
 
   }
 
+
   /**
-   * After moving into a room, or ending up in one this triggers the room effect if it hasnet been
+   * After moving into a room, or ending up in one this triggers the room effect if it has not been
    * visited before.
    *
    * @param node the node to trigger its effect.
    */
-  private void roomEffect(IWritableNode node) {
+  private void roomEffect(IWritableNode node, Direction dir) {
     RoomType curRoom = node.getRoomType();
-    if (node.beenVisited()) {
+    if (node.beenVisited() && node.getRoomType() != RoomType.HALLWAY) {
       return;
     } else {
       node.visit();
     }
 
     switch (curRoom) {
+      case HALLWAY:
+        List<Direction> dirs = new ArrayList<>(node.getConnectedDirs());
+        dirs.remove(dir.opposite());
+        this.movePlayer(dirs.get(0));
+        return;
       case WUMPUS:
         this.isGameOver = true;
-        this.victory = true;
-        return;
-      case THIEF:
-        this.player1.encounterThief();
+        this.recentEffects.add(PlayerEffect.RAN_INTO_WUMPUS);
         return;
       case PIT:
         this.isGameOver = true;
+        this.recentEffects.add(PlayerEffect.FELL_INTO_PIT);
         return;
       case SUPERBAT:
-        this.telePlayer();
+        if (this.telePlayer()) {
+          this.recentEffects.add(PlayerEffect.AVOIDED_BAT);
+        } else {
+          this.recentEffects.add(PlayerEffect.GRABBED_BY_BAT);
+        }
         return;
       case SUPERBAT_AND_PIT:
         if (!this.telePlayer()) {
+          this.recentEffects.add(PlayerEffect.FELL_INTO_PIT);
           this.isGameOver = true;
+        } else {
+          this.recentEffects.add(PlayerEffect.GRABBED_BY_BAT);
         }
 
       default:
@@ -392,22 +449,25 @@ public class Maze implements IMaze {
   }
 
   private boolean telePlayer() {
-      boolean foundLoc = false;
-      Random r = new Random(this.seed* this.player1.getPosition().getRow()
-              * this.player1.getPosition().getCol());
+    boolean foundLoc = false;
+    Random r = new Random(this.seed * this.player1.getPosition().getRow()
+            * this.player1.getPosition().getCol());
+    int tele = r.nextInt(2);
 
-    if (r.nextBoolean()) {
+    if (tele == 0) {
       return false;
+
     }
-      while (!foundLoc) {
-          int rowLoc = r.nextInt(this.board.length) - 1;
-          int colLoc = r.nextInt(this.board[0].length) - 1;
-          if (!Arrays.asList(RoomType.SUPERBAT, RoomType.SUPERBAT_AND_PIT, RoomType.HALLWAY)
-                  .contains(this.board[rowLoc][colLoc].getRoomType())) {
-              this.player1.setPosition(rowLoc, colLoc);
-              foundLoc = true;
-          }
+    while (!foundLoc) {
+      int rowLoc = r.nextInt(this.board.length);
+      int colLoc = r.nextInt(this.board[0].length);
+      if (!Arrays.asList(RoomType.SUPERBAT, RoomType.SUPERBAT_AND_PIT, RoomType.HALLWAY)
+              .contains(this.board[rowLoc][colLoc].getRoomType())) {
+        this.player1.setPosition(rowLoc, colLoc);
+        this.roomEffect(this.board[rowLoc][colLoc], null);
+        foundLoc = true;
       }
+    }
     return true;
   }
 
@@ -449,7 +509,70 @@ public class Maze implements IMaze {
   }
 
   @Override
-  public int getPlayerGold() {
-    return this.player1.getGold();
+  public List<PlayerEffect> getRecentEffects() {
+    return List.copyOf(this.recentEffects);
   }
+
+  @Override
+  public void fireArrow(Direction dir, int distance) {
+    if (this.isGameOver) {
+      return;
+    }
+    if (dir == null) {
+      throw new IllegalArgumentException("No null directions");
+    }
+    this.player1.removeArrow();
+    if (fireArrowHelper(dir, distance, player1.getPosition())) {
+      this.isGameOver = true;
+      this.recentEffects.add(PlayerEffect.SHOT_WUMPUS);
+    } else {
+      this.recentEffects.add(PlayerEffect.MISSED_WUMPUS);
+      if (this.player1.getArrowAmount() == 0) {
+        this.isGameOver = true;
+        this.recentEffects.add(PlayerEffect.NO_ARROWS);
+      }
+
+    }
+
+  }
+
+  private boolean fireArrowHelper(Direction dir, int distance, Position newStart) {
+
+    IWritableNode startNode = this.board[newStart.getRow()][newStart.getCol()];
+    Position endPos;
+    if (distance == 0) {
+      return startNode.getRoomType() == RoomType.WUMPUS;
+    }
+    if (!startNode.getConnectedDirs().contains(dir)) {
+      return false;
+    }
+    switch (dir) {
+      case NORTH:
+        endPos = this.handleWrap(new Position(newStart.getRow() - 1, newStart.getCol()));
+        break;
+      case WEST:
+        endPos = this.handleWrap(new Position(newStart.getRow(), newStart.getCol() - 1));
+        break;
+      case EAST:
+        endPos = this.handleWrap(new Position(newStart.getRow(), newStart.getCol() + 1));
+        break;
+      case SOUTH:
+        endPos = this.handleWrap(new Position(newStart.getRow() + 1, newStart.getCol()));
+        break;
+      default:
+        return false;
+    }
+    if (this.board[endPos.getRow()][endPos.getCol()].getRoomType() == RoomType.HALLWAY) {
+      List<Direction> dirs = new ArrayList<>(this.board[endPos.getRow()][endPos.getCol()].getConnectedDirs());
+      dirs.remove(dir.opposite());
+      dir = dirs.get(0);
+
+      return fireArrowHelper(dir, distance, endPos);
+    }
+
+
+    return fireArrowHelper(dir, distance - 1, endPos);
+  }
+
+
 }

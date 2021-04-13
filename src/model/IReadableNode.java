@@ -61,4 +61,6 @@ public interface IReadableNode {
    * @return whether this node has been visited
    */
   boolean beenVisited();
+
+  List<RoomAttribute> getRoomAttributes();
 }
