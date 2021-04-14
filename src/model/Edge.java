@@ -4,7 +4,7 @@ package model;
  * Represents an edge in the maze. Currently only needed for maze creation and not functionality
  * after.
  */
-class Edge implements IEdge {
+class Edge implements IEdge{
   private final IWritableNode[] nodes;
   private final int weight;
   private final Direction dir;

@@ -321,27 +321,24 @@ public class Maze implements IMaze {
   private List<IWritableNode> getConnectedRooms(IWritableNode node) {
     List<IWritableNode> connectedRooms = new ArrayList<>();
     for (Direction dir : node.getConnectedDirs()) {
-      switch (dir) {
-        case NORTH:
-          connectedRooms.add(this.getConnectedNodeHelp(
-                  this.handleWrap(
-                          new Position(node.getPosition().getRow(), node.getPosition().getCol()))));
-          break;
-        case SOUTH:
-          break;
-        case EAST:
-          break;
-        case WEST:
-          break;
-      }
+      connectedRooms.add(this.getConnectedNodeHelp(
+              this.handleWrap(this.updatePosFromDirection(node.getPosition(), dir)), dir));
+
     }
 
     return connectedRooms;
   }
 
-  private IWritableNode getConnectedNodeHelp(Position position) {
+  private IWritableNode getConnectedNodeHelp(Position position, Direction direction) {
+    IWritableNode node = this.board[position.getRow()][position.getCol()];
+    if (node.getRoomType() != RoomType.HALLWAY) {
+      return node;
+    } else {
+      List<Direction> directions = node.getConnectedDirs();
+      directions.remove(direction.opposite());
 
-    return null;
+      return null;
+    }
   }
 
 
@@ -420,6 +417,25 @@ public class Maze implements IMaze {
     }
     return position;
 
+  }
+
+  private Position updatePosFromDirection(Position position, Direction direction) {
+    switch (direction) {
+      case EAST:
+        return new Position(position.getRow(), position.getCol() + 1);
+
+      case WEST:
+        return new Position(position.getRow(), position.getCol() - 1);
+
+      case SOUTH:
+        return new Position(position.getRow() + 1, position.getCol());
+
+      case NORTH:
+        return new Position(position.getRow() - 1, position.getCol());
+
+      default:
+        throw new IllegalArgumentException("No null inputs");
+    }
   }
 
 
@@ -575,6 +591,7 @@ public class Maze implements IMaze {
     if (!startNode.getConnectedDirs().contains(dir)) {
       return false;
     }
+    // endPos = this.handleWrap(this.updatePosFromDirection(newStart, dir));
     switch (dir) {
       case NORTH:
         endPos = this.handleWrap(new Position(newStart.getRow() - 1, newStart.getCol()));
