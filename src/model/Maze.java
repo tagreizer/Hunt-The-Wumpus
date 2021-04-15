@@ -161,20 +161,27 @@ public class Maze implements IMaze {
     }
 
 
+    //Generates the graph of nodes building pieces
     this.generateNodes();
     List<IEdge> edgeWorkList = this.generateEdgeList(isWrapping, seed);
-
+    //Assigns edges to connect the graph
     this.assignEdges(edgeWorkList, egdesNeeded);
 
-
+    //Sets start and End
     this.board[sRow][sCol].setRoomType(RoomType.START);
     this.board[gRow][gCol].setRoomType(RoomType.WUMPUS);
 
+    //Converts rooms with two exits to hallways
     this.convertToHallways();
 
+    //adds special room types
     this.assignRoomTypeToMaze(RoomType.SUPERBAT, percentBats, seed);
     this.assignRoomTypeToMaze(RoomType.PIT, percentPits, seed);
 
+    //gives warning to special's neighbors
+    this.applyAttributesToNeighbors();
+
+    //rest of maze data
     this.player1 = new Player(sRow, sCol, arrowCount);
     this.board[sRow][sCol].shouldIContainPlayer(true);
     this.isGameOver = false;
@@ -280,11 +287,35 @@ public class Maze implements IMaze {
 
   private void convertToHallways() {
     for (int r = 0; r < this.board.length; r++) {
-      for (int c = 0; c < this.board[r].length - 1; c++) {
+      for (int c = 0; c < this.board[r].length; c++) {
         if (this.board[r][c].getRoomType() == RoomType.EMPTY && this.board[r][c].getConnectedDirs().size() == 2) {
           this.board[r][c].setRoomType(RoomType.HALLWAY);
 
         }
+      }
+    }
+  }
+
+  private void applyAttributesToNeighbors() {
+    for (int r = 0; r < this.board.length; r++) {
+      for (int c = 0; c < this.board[r].length; c++) {
+        switch (this.board[r][c].getRoomType()) {
+          case WUMPUS:
+            for (IWritableNode node : this.getConnectedRooms(this.board[r][c])) {
+              node.addAttribute(RoomAttribute.NEXT_TO_WUMPUS);
+            }
+            break;
+          case PIT:
+          case SUPERBAT_AND_PIT:
+            for (IWritableNode node : this.getConnectedRooms(this.board[r][c])) {
+              node.addAttribute(RoomAttribute.NEXT_TO_PIT);
+            }
+            break;
+          default:
+            //neighbors of other room types get nothing.
+        }
+
+
       }
     }
   }
@@ -334,10 +365,11 @@ public class Maze implements IMaze {
     if (node.getRoomType() != RoomType.HALLWAY) {
       return node;
     } else {
-      List<Direction> directions = node.getConnectedDirs();
+      List<Direction> directions = new ArrayList<>(node.getConnectedDirs());
       directions.remove(direction.opposite());
 
-      return null;
+      return getConnectedNodeHelp(this.handleWrap(this.updatePosFromDirection(position,directions.get(0))),
+              directions.get(0));
     }
   }
 
@@ -469,9 +501,9 @@ public class Maze implements IMaze {
         return;
       case SUPERBAT:
         if (this.telePlayer()) {
-          this.recentEffects.add(PlayerEffect.AVOIDED_BAT);
-        } else {
           this.recentEffects.add(PlayerEffect.GRABBED_BY_BAT);
+        } else {
+          this.recentEffects.add(PlayerEffect.AVOIDED_BAT);
         }
         return;
       case SUPERBAT_AND_PIT:

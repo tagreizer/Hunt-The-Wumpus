@@ -7,10 +7,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import controller.EventController;
-import model.Direction;
-import model.IReadableNode;
-import model.PlayerEffect;
-import model.Position;
+import model.*;
 
 public class TextMazeView implements IMazeView {
   private EventController listener;
@@ -45,13 +42,14 @@ public class TextMazeView implements IMazeView {
       builder.append(this.playerEffectMsg());
     }
 
-    //IReadableNode playerNode = this.nodes.get(playerPos.getRow()).get(playerPos.getCol());
+    IReadableNode playerNode = this.nodes.get(playerPos.getRow()).get(playerPos.getCol());
 
     builder.append("You are in cave (");
     builder.append(playerPos.getRow());
     builder.append(",");
     builder.append(playerPos.getCol());
     builder.append(")\n");
+    builder.append(this.roomAttributeMsg(playerNode));
     builder.append("You can move: ");
 
     for (Direction dir : this.possibleMoves) {
@@ -114,7 +112,7 @@ public class TextMazeView implements IMazeView {
           builder.append("CHOMP CHOMP CHOMP...\nYou have been eaten by the Wumpus!");
           break;
         case SHOT_WUMPUS:
-          builder.append("RAWRRRRRrrrr...\nYou hear the sounds of a dead Wumpus pierced by an arrow!");
+          builder.append("RAWRRRRRrrrr...\nYou hear the screams of pain from a Wumpus pierced with an arrow!");
           break;
         case MISSED_WUMPUS:
           builder.append("Clank...\nYou hear your arrow echo off stone! You Missed!");
@@ -126,6 +124,26 @@ public class TextMazeView implements IMazeView {
           //do nothing for other ones.
       }
       builder.append("\n");
+    }
+
+    return builder.toString();
+  }
+
+  private String roomAttributeMsg(IReadableNode node) {
+    StringBuilder builder = new StringBuilder();
+    for (RoomAttribute attribute : node.getRoomAttributes()) {
+      switch (attribute) {
+
+        case NEXT_TO_WUMPUS:
+          builder.append("There is the stench of Wumpus in the air...\n");
+          break;
+        case NEXT_TO_PIT:
+          builder.append("A cold wind blows...\n");
+          break;
+        default:
+          //other attributes dont have any effect for this view type.
+      }
+
     }
 
     return builder.toString();

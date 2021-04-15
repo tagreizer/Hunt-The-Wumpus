@@ -66,7 +66,10 @@ class WritableNode extends ReadableNode implements IWritableNode {
 
   @Override
   public void addAttribute(RoomAttribute attribute) {
-    this.attributes.add(attribute);
+    if (!this.attributes.contains(attribute)) {
+      this.attributes.add(attribute);
+    }
+
   }
 
 

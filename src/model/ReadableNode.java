@@ -21,7 +21,7 @@ class ReadableNode implements IReadableNode {
    * @param col the col location
    */
   ReadableNode(int row, int col) {
-    this(row, col, new ArrayList<>(), false, RoomType.EMPTY, false);
+    this(row, col, new ArrayList<>(),  RoomType.EMPTY, false, new ArrayList<>());
   }
 
   /**
@@ -31,20 +31,18 @@ class ReadableNode implements IReadableNode {
    * @param row                 the row location
    * @param col                 the col location
    * @param connectedDirections the directions this is connected in.
-   * @param hasPlayer           whether or not he node has the player.
+
    * @param roomType            the type of room this node is.
    */
   protected ReadableNode(int row, int col, List<Direction> connectedDirections,
-                         boolean hasPlayer, RoomType roomType, boolean visited) {
+                         RoomType roomType, boolean visited, List<RoomAttribute> attributes) {
     this.position = new Position(row, col);
     this.roomType = roomType;
     this.connectedDirections = connectedDirections;
     this.visited = visited;
-    this.attributes = new ArrayList<>();
+    this.attributes = attributes;
 
-    if (hasPlayer) {
-      this.attributes.add(RoomAttribute.HAS_PLAYER1);
-    }
+
   }
 
   @Override
@@ -79,7 +77,7 @@ class ReadableNode implements IReadableNode {
   @Override
   public IReadableNode copy() {
     return new ReadableNode(this.position.getRow(), this.position.getCol(),
-            this.getConnectedDirs(), this.attributes.contains(RoomAttribute.HAS_PLAYER1), this.roomType, this.visited);
+            this.getConnectedDirs(), this.roomType, this.visited, attributes);
   }
 
   @Override
@@ -118,5 +116,10 @@ class ReadableNode implements IReadableNode {
       default:
         return "0";
     }
+  }
+
+  @Override
+  public String toString() {
+    return "(" + this.position.getRow() + "," + this.position.getCol() + ")";
   }
 }
