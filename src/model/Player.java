@@ -1,5 +1,8 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Represents a player in the maze game. Not accessable outside the model package. Users should not
  * be able to obtain, or modify the player, as only the maze should be doing this. A player
@@ -9,6 +12,7 @@ package model;
 class Player {
   private Position position;
   private int arrowAmount;
+  private final List<PlayerEffect> recentEffects;
 
 
   /**
@@ -20,6 +24,7 @@ class Player {
   Player(int row, int col, int arrowCount) {
     this.position = new Position(row, col);
     this.arrowAmount = arrowCount;
+    this.recentEffects = new ArrayList<>();
 
   }
 
@@ -75,6 +80,18 @@ class Player {
 
   int getArrowAmount() {
     return this.arrowAmount;
+  }
+
+  void addEffect(PlayerEffect effect) {
+    this.recentEffects.add(effect);
+  }
+
+  void clearEffects() {
+    this.recentEffects.clear();
+  }
+
+  List<PlayerEffect> getRecentEffects() {
+    return List.copyOf(this.recentEffects);
   }
 }
 

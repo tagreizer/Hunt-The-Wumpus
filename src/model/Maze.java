@@ -104,7 +104,7 @@ public class Maze implements IMaze {
    * @param gRow       the goal row
    * @param gCol       the goal col
    * @param seed       the seed for the maze to build its edges from
-   * @param arrowCount
+   * @param arrowCount the amount of arrows the player gets
    */
   public Maze(int rows, int cols, boolean isWrapping,
               int sRow, int sCol, int gRow, int gCol, int percentBats, int percentPits, long seed, int arrowCount) {
@@ -405,7 +405,7 @@ public class Maze implements IMaze {
 
   @Override
   public void movePlayer(Direction direction) {
-    this.recentEffects.clear();
+    this.player1.clearEffects();
     if (this.isGameOver()) {
       throw new IllegalStateException("The game is over");
     }
@@ -493,25 +493,25 @@ public class Maze implements IMaze {
         return;
       case WUMPUS:
         this.isGameOver = true;
-        this.recentEffects.add(PlayerEffect.RAN_INTO_WUMPUS);
+        this.player1.addEffect(PlayerEffect.RAN_INTO_WUMPUS);
         return;
       case PIT:
         this.isGameOver = true;
-        this.recentEffects.add(PlayerEffect.FELL_INTO_PIT);
+        this.player1.addEffect(PlayerEffect.FELL_INTO_PIT);
         return;
       case SUPERBAT:
         if (this.telePlayer()) {
-          this.recentEffects.add(PlayerEffect.GRABBED_BY_BAT);
+          this.player1.addEffect(PlayerEffect.GRABBED_BY_BAT);
         } else {
-          this.recentEffects.add(PlayerEffect.AVOIDED_BAT);
+          this.player1.addEffect(PlayerEffect.AVOIDED_BAT);
         }
         return;
       case SUPERBAT_AND_PIT:
         if (!this.telePlayer()) {
-          this.recentEffects.add(PlayerEffect.FELL_INTO_PIT);
+          this.player1.addEffect(PlayerEffect.FELL_INTO_PIT);
           this.isGameOver = true;
         } else {
-          this.recentEffects.add(PlayerEffect.GRABBED_BY_BAT);
+          this.player1.addEffect(PlayerEffect.GRABBED_BY_BAT);
         }
 
       default:
@@ -579,18 +579,23 @@ public class Maze implements IMaze {
 
   @Override
   public boolean isGameOver() {
-    return this.isGameOver;
+    List<PlayerEffect> effects = this.player1.getRecentEffects();
+    return effects.contains(PlayerEffect.NO_ARROWS) || effects.contains(PlayerEffect.SHOT_WUMPUS)
+            || effects.contains(PlayerEffect.RAN_INTO_WUMPUS) || effects.contains(PlayerEffect.FELL_INTO_PIT);
   }
 
   @Override
   public List<PlayerEffect> getRecentEffects() {
-    return List.copyOf(this.recentEffects);
+    return this.player1.getRecentEffects();
   }
 
   @Override
   public void fireArrow(Direction dir, int distance) {
     if (this.isGameOver) {
-      return;
+      throw new IllegalStateException("The game is over you cannot shoot");
+    }
+    if (this.player1.getRecentEffects().contains(PlayerEffect.NO_ARROWS)) {
+
     }
     if (distance < 1) {
       throw new IllegalArgumentException("You must shoot an arrow greater than 1 units far");
@@ -601,12 +606,12 @@ public class Maze implements IMaze {
     this.player1.removeArrow();
     if (fireArrowHelper(dir, distance, player1.getPosition())) {
       this.isGameOver = true;
-      this.recentEffects.add(PlayerEffect.SHOT_WUMPUS);
+      this.player1.addEffect(PlayerEffect.SHOT_WUMPUS);
     } else {
-      this.recentEffects.add(PlayerEffect.MISSED_WUMPUS);
+      this.player1.addEffect(PlayerEffect.MISSED_WUMPUS);
       if (this.player1.getArrowAmount() == 0) {
         this.isGameOver = true;
-        this.recentEffects.add(PlayerEffect.NO_ARROWS);
+        this.player1.addEffect(PlayerEffect.NO_ARROWS);
       }
 
     }

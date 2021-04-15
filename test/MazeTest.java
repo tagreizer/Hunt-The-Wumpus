@@ -503,5 +503,28 @@ public class MazeTest {
     assertTrue(m.getRecentEffects().contains(PlayerEffect.NO_ARROWS));
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void badArrowInputs() {
+    IMaze m = new Maze(8, 8, true, 0, 0, 7, 7, 10, 10, 325, 2);
+    m.fireArrow(Direction.NORTH, -1);
+
+  }
+  @Test(expected = IllegalArgumentException.class)
+  public void badArrowInputs2() {
+    IMaze m = new Maze(8, 8, true, 0, 0, 7, 7, 10, 10, 325, 2);
+    m.fireArrow(null, 3);
+
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void badArrowNonLeft() {
+    IMaze m = new Maze(8, 8, true, 0, 0, 7, 7, 10, 10, 325, 2);
+    m.fireArrow(Direction.NORTH, 3);
+    m.fireArrow(Direction.NORTH, 3);
+    m.fireArrow(Direction.NORTH, 3);
+
+  }
+
+
 
 }
