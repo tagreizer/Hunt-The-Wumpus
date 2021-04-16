@@ -24,4 +24,6 @@ public interface EventController {
    * @param distance the distance
    */
   void shootArrow(Direction dir, int distance);
+
+
 }

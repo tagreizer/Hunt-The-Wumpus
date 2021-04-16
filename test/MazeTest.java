@@ -1,3 +1,4 @@
+
 import model.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -316,7 +317,7 @@ public class MazeTest {
   }
 
   @Test
-  public void badAndPitTesting2() {
+  public void batTesting2() {
     IMaze m = new Maze(6, 6, 20, true, 0, 0, 5, 5, 30, 0, 982, 2);
     assertEquals("P-+ 0-0 0 + \n" +
             "| | | | | | \n" +
@@ -454,6 +455,7 @@ public class MazeTest {
 
   @Test
   public void sampleMazeGeneration() {
+    //used as an image for when i run the game with the view, so that i can see where i need to go
     IMaze m = new Maze(8, 8, true, 0, 0, 7, 7, 10, 10, 325, 2);
 
     assertEquals("P +-0 # + 0 +-+ \n" +
@@ -472,6 +474,23 @@ public class MazeTest {
             "|         | | | \n" +
             "0-B-+-0 +-#-+ G-\n" +
             "| |     |     | \n",m.toString());
+
+  }
+  @Test
+  public void sampleMazeGeneration2() {
+    //used as an image for when i run the game with the view, so that i can see where i need to go
+    IMaze m = new Maze(5, 5, true, 0, 0, 4, 4, 5, 20, 325, 2);
+
+    assertEquals("P-0 U + + \n" +
+            "|     | | \n" +
+            "+-U-0 +-+ \n" +
+            "  |       \n" +
+            "+-B-0 0 +-\n" +
+            "  |   | | \n" +
+            "+ U +-0-0-\n" +
+            "|   |     \n" +
+            "U-U + 0 G-\n" +
+            "    | | | \n",m.toString());
 
   }
 

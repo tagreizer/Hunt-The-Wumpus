@@ -96,6 +96,10 @@ public class MazeBuilder {
     this.arrowCount = arrowCount;
   }
 
+  /**
+   * Builds the maze object based off of the mazebuilder's specifications
+   * @return the maze object
+   */
   public IMaze build() {
     if (perfect) {
       return new Maze(this.rows, this.cols,

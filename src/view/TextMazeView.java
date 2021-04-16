@@ -9,6 +9,7 @@ import java.util.Scanner;
 import controller.EventController;
 import model.*;
 
+
 /**
  * Represents a text based view for the maze wumpus game. Is player/controlled by text, and is
  * visualized by text as well.
@@ -134,13 +135,15 @@ public class TextMazeView implements IMazeView {
           builder.append("CHOMP CHOMP CHOMP...\nYou have been eaten by the Wumpus!");
           break;
         case SHOT_WUMPUS:
-          builder.append("RAWRRRRRrrrr...\nYou hear the screams of pain from a Wumpus pierced with an arrow!");
+          builder.append("RAWRRRRRrrrr...\nYou hear the " +
+                  "screams of pain from a Wumpus pierced with an arrow!");
           break;
         case MISSED_WUMPUS:
           builder.append("Clank...\nYou hear your arrow echo off stone! You Missed!");
           break;
         case NO_ARROWS:
-          builder.append("RAWRRRRRRRRR...\nYou're out of arrows and the Wumpus knows!\nHe came to eat you!");
+          builder.append("RAWRRRRRRRRR...\nYou're out of " +
+                  "arrows and the Wumpus knows!\nHe came to eat you!");
           break;
         default:
           //do nothing for other ones.

@@ -45,9 +45,14 @@ public class MazeController implements IMazeController, EventController {
           break;
         }
       }
-      this.view.animate();
+
+        this.view.animate();
+
+
+
 
     }
+
     this.view.animateGameOver();
 
 
@@ -78,4 +83,6 @@ public class MazeController implements IMazeController, EventController {
 
     }
   }
+
+
 }

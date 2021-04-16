@@ -65,9 +65,12 @@ Maze Class:
 Basic generation was changed, previously hallways were not a thing, now when
 the player moves through rooms that have two connections they automatically move
 through them. These are considered hallways. Super bats and pits were also added
-to support required functionality. The is gameover now checks for player effects
-that signal the game has ended. Other private methods were added to help with
-these different changes and handle smaller problems.
+to support required functionality. Randomness for room generation is seeded from
+the seed now as well as the enum ordial so that rooms are placed unqiuely. Randomness
+from bats is seeded from position and the seed so they dont all behave the same either
+The is gameover now checks for player effects that signal the game has ended.
+Other private methods were added to help with these different changes and
+handle smaller problems.
 
 Player Class:
 No longer keeps track of gold, but now has arrows and a effects that the player
@@ -108,3 +111,31 @@ How to get desired outcomes listed.
 All desired outcomes are also shown in TextViewTest as tests.
 
 Run 1
+Player transported by SuperBat.
+Jar arguments:
+-rows 8 -cols 8 -perfect -wrapping -gRow 7 -gCol 7 -bats 10 -pits 10 -seed 325 -arrows 2
+User input movements:
+m n m e (this will cause the player to be teleported by the SuperBat, to only one cave away)
+
+Run 2
+Player Losing by falling into Pit.
+Jar arguments:
+-rows 5 -cols 5 -perfect -wrapping -gRow 4 -gCol 4 -bats 5 -pits 20 -seed 325 -arrows 2
+User input movements:
+m s
+
+Run 3
+Player eaten by the Wumpus.
+Jar arguments:
+-rows 8 -cols 8 -perfect -wrapping -gRow 7 -gCol 7 -bats 10 -pits 10 -seed 325 -arrows 2
+User input movements:
+m n m w
+
+Run 4
+Player kills the Wumpus.
+Jar arguments:
+-rows 8 -cols 8 -perfect -wrapping -gRow 7 -gCol 7 -bats 10 -pits 10 -seed 325 -arrows 2
+User input movements:
+m n s w 1
+
+

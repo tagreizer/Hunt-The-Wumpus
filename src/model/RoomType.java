@@ -6,6 +6,10 @@ package model;
 public enum RoomType {
   WUMPUS, START, EMPTY, HALLWAY, SUPERBAT, PIT, SUPERBAT_AND_PIT;
 
+  /**
+   * Returns the countertype of the room. This is for roomtypes that can combine.
+   * @return the counter part of the room type.
+   */
   public RoomType getCounterPart() {
     switch (this) {
       case SUPERBAT:

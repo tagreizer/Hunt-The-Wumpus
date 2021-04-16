@@ -58,8 +58,8 @@ public interface IMaze {
    * straight through rooms. The distance must be exact to kill the wumpus, too short or too long is
    * considered a miss.
    *
-   * @param dir
-   * @param distance
+   * @param dir the direction to shoot the arrow
+   * @param distance the distance to shoot
    */
   void fireArrow(Direction dir, int distance);
 
