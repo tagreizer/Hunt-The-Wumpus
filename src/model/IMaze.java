@@ -39,15 +39,28 @@ public interface IMaze {
   List<List<IReadableNode>> getNodes();
 
   /**
-   * Returns whether or not the game is over. The game ends when the player reaches the goal
-   * currently
+   * Returns whether or not the game is over. The game ends when the player either runs into the
+   * wumpus, kills the wumpus, falls into a pit, or runs out of arrows.
    *
    * @return whether or not the game is over
    */
   boolean isGameOver();
 
+  /**
+   * Get the recent effects experienced by the player.
+   *
+   * @return the recent player effects
+   */
   List<PlayerEffect> getRecentEffects();
 
+  /**
+   * Shoots an arrow in a specified direction. The arrow can curve through hallways, but travels
+   * straight through rooms. The distance must be exact to kill the wumpus, too short or too long is
+   * considered a miss.
+   *
+   * @param dir
+   * @param distance
+   */
   void fireArrow(Direction dir, int distance);
 
 

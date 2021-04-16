@@ -1,7 +1,8 @@
+package model;
+
 import java.util.Random;
 
-import model.IMaze;
-import model.Maze;
+
 
 /**
  * A builder for a maze object, used by the main function to build a maze object on the fly.

@@ -3,6 +3,7 @@ import java.io.InputStreamReader;
 import controller.IMazeController;
 import controller.MazeController;
 import model.IMaze;
+import model.MazeBuilder;
 import view.IMazeView;
 import view.TextMazeView;
 

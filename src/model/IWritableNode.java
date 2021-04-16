@@ -50,6 +50,10 @@ public interface IWritableNode extends IReadableNode {
    */
   void visit();
 
+  /**
+   * Adds an attribute to a node.
+   * @param attribute the attribute to add to a node.
+   */
   void addAttribute(RoomAttribute attribute);
 
 }

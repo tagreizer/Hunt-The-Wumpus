@@ -19,7 +19,7 @@ class Player {
    * Creates a player at the specified location.
    *  @param row the row the player starts at.
    * @param col the col the player starts at.
-   * @param arrowCount
+   * @param arrowCount the amount of arrows the player starts with.
    */
   Player(int row, int col, int arrowCount) {
     this.position = new Position(row, col);
@@ -74,22 +74,40 @@ class Player {
 
   }
 
+  /**
+   * Removes one arrow from the player.
+   */
   void removeArrow() {
     this.arrowAmount--;
   }
 
+  /**
+   * Returns the amount of arrows the player has left.
+   * @return the amount of arrows.
+   */
   int getArrowAmount() {
     return this.arrowAmount;
   }
 
+  /**
+   * Adds an effect to the player.
+   * @param effect the effect to add
+   */
   void addEffect(PlayerEffect effect) {
     this.recentEffects.add(effect);
   }
 
+  /**
+   * Clears the effects the player currently has.
+   */
   void clearEffects() {
     this.recentEffects.clear();
   }
 
+  /**
+   * Returns the recent effects on the player.
+   * @return the effects.
+   */
   List<PlayerEffect> getRecentEffects() {
     return List.copyOf(this.recentEffects);
   }

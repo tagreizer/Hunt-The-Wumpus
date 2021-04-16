@@ -16,9 +16,7 @@ public class Maze implements IMaze {
   private final IWritableNode[][] board;
   private final List<IEdge> edges;
   private final Player player1;
-  private boolean isGameOver;
   private final long seed;
-  private final List<PlayerEffect> recentEffects;
 
 
   /**
@@ -126,7 +124,7 @@ public class Maze implements IMaze {
    * @param gRow           the goal row
    * @param gCol           the goal col
    * @param seed           the seed for the maze to build its edges from
-   * @param arrowCount
+   * @param arrowCount     the number of arrows the player gets
    */
   public Maze(int rows, int cols, int wallsRemaining, boolean isWrapping,
               int sRow, int sCol, int gRow, int gCol, int percentBats, int percentPits, long seed, int arrowCount) {
@@ -184,9 +182,7 @@ public class Maze implements IMaze {
     //rest of maze data
     this.player1 = new Player(sRow, sCol, arrowCount);
     this.board[sRow][sCol].shouldIContainPlayer(true);
-    this.isGameOver = false;
     this.seed = seed;
-    this.recentEffects = new ArrayList<>();
 
 
   }
@@ -285,6 +281,10 @@ public class Maze implements IMaze {
 
   }
 
+  /**
+   * Takes nodes that have two connections and turns them into hallways. One connected rooms are NOT
+   * turned to hallways, this allows dead ends to be rooms.
+   */
   private void convertToHallways() {
     for (int r = 0; r < this.board.length; r++) {
       for (int c = 0; c < this.board[r].length; c++) {
@@ -296,6 +296,10 @@ public class Maze implements IMaze {
     }
   }
 
+  /**
+   * Looks for special rooms, then once found it finds connect rooms, hallways do not count, and
+   * gives them the hint attributes that correspond to the special rooms, like smelling the wumpus.
+   */
   private void applyAttributesToNeighbors() {
     for (int r = 0; r < this.board.length; r++) {
       for (int c = 0; c < this.board[r].length; c++) {
@@ -349,6 +353,12 @@ public class Maze implements IMaze {
     }
   }
 
+  /**
+   * Takes a given node and returns a list of rooms that are connected, hallways do not count.
+   *
+   * @param node the node to find connections from
+   * @return the connected rooms
+   */
   private List<IWritableNode> getConnectedRooms(IWritableNode node) {
     List<IWritableNode> connectedRooms = new ArrayList<>();
     for (Direction dir : node.getConnectedDirs()) {
@@ -360,6 +370,15 @@ public class Maze implements IMaze {
     return connectedRooms;
   }
 
+  /**
+   * Helper to the get connected rooms, this takes in a position and a direction of the connection,
+   * and if its not a hallway returns it as the connected node. If it is a hallway it goes through
+   * the hallway and tries the next node.
+   *
+   * @param position  position of the node to check.
+   * @param direction the direction of the connection from the previous node.
+   * @return the connected room that isnt a hallway
+   */
   private IWritableNode getConnectedNodeHelp(Position position, Direction direction) {
     IWritableNode node = this.board[position.getRow()][position.getCol()];
     if (node.getRoomType() != RoomType.HALLWAY) {
@@ -368,7 +387,7 @@ public class Maze implements IMaze {
       List<Direction> directions = new ArrayList<>(node.getConnectedDirs());
       directions.remove(direction.opposite());
 
-      return getConnectedNodeHelp(this.handleWrap(this.updatePosFromDirection(position,directions.get(0))),
+      return getConnectedNodeHelp(this.handleWrap(this.updatePosFromDirection(position, directions.get(0))),
               directions.get(0));
     }
   }
@@ -405,11 +424,13 @@ public class Maze implements IMaze {
 
   @Override
   public void movePlayer(Direction direction) {
-    this.player1.clearEffects();
+
     if (this.isGameOver()) {
       throw new IllegalStateException("The game is over");
     }
+
     if (this.possiblePlayerMoves().contains(direction)) {
+      this.player1.clearEffects();
       Position playerLoc = player1.getPosition();
       this.board[playerLoc.getRow()][playerLoc.getCol()].shouldIContainPlayer(false);
       this.player1.move(direction);
@@ -451,6 +472,14 @@ public class Maze implements IMaze {
 
   }
 
+  /**
+   * Takes in a position and a direction and returns the new position if you moved based off of that
+   * direction.
+   *
+   * @param position  the position you start at.
+   * @param direction the direction you move to.
+   * @return the new position you are in.
+   */
   private Position updatePosFromDirection(Position position, Direction direction) {
     switch (direction) {
       case EAST:
@@ -492,11 +521,9 @@ public class Maze implements IMaze {
         this.movePlayer(dirs.get(0));
         return;
       case WUMPUS:
-        this.isGameOver = true;
         this.player1.addEffect(PlayerEffect.RAN_INTO_WUMPUS);
         return;
       case PIT:
-        this.isGameOver = true;
         this.player1.addEffect(PlayerEffect.FELL_INTO_PIT);
         return;
       case SUPERBAT:
@@ -509,7 +536,6 @@ public class Maze implements IMaze {
       case SUPERBAT_AND_PIT:
         if (!this.telePlayer()) {
           this.player1.addEffect(PlayerEffect.FELL_INTO_PIT);
-          this.isGameOver = true;
         } else {
           this.player1.addEffect(PlayerEffect.GRABBED_BY_BAT);
         }
@@ -522,6 +548,12 @@ public class Maze implements IMaze {
 
   }
 
+  /**
+   * Teleports the player to a random location with a 50% chance. A player cannot be teleported to a
+   * room with a bat or a hallway.
+   *
+   * @return if the player was teleported.
+   */
   private boolean telePlayer() {
     boolean foundLoc = false;
     Random r = new Random(this.seed * this.player1.getPosition().getRow()
@@ -591,11 +623,11 @@ public class Maze implements IMaze {
 
   @Override
   public void fireArrow(Direction dir, int distance) {
-    if (this.isGameOver) {
+    if (this.isGameOver()) {
       throw new IllegalStateException("The game is over you cannot shoot");
     }
     if (this.player1.getRecentEffects().contains(PlayerEffect.NO_ARROWS)) {
-
+      throw new IllegalStateException("Player is out of arrows");
     }
     if (distance < 1) {
       throw new IllegalArgumentException("You must shoot an arrow greater than 1 units far");
@@ -603,14 +635,13 @@ public class Maze implements IMaze {
     if (dir == null) {
       throw new IllegalArgumentException("No null directions");
     }
+    this.player1.clearEffects();
     this.player1.removeArrow();
     if (fireArrowHelper(dir, distance, player1.getPosition())) {
-      this.isGameOver = true;
       this.player1.addEffect(PlayerEffect.SHOT_WUMPUS);
     } else {
       this.player1.addEffect(PlayerEffect.MISSED_WUMPUS);
       if (this.player1.getArrowAmount() == 0) {
-        this.isGameOver = true;
         this.player1.addEffect(PlayerEffect.NO_ARROWS);
       }
 
@@ -618,6 +649,16 @@ public class Maze implements IMaze {
 
   }
 
+  /**
+   * Helps the fire arrow method. Checks to see if the arrow hit the wumpus. This function walks
+   * down rooms/hallways searching to see if the wumpus is hit. If its a hallway it will curve and
+   * not count for distance, if its a room it contiunes straight but looses distance.
+   *
+   * @param dir the direction the arrow is traveling
+   * @param distance the distance for the arrow to travel.
+   * @param newStart the position the arrow should start at.
+   * @return if the arrow hit the wumpus.
+   */
   private boolean fireArrowHelper(Direction dir, int distance, Position newStart) {
 
     IWritableNode startNode = this.board[newStart.getRow()][newStart.getCol()];
@@ -628,23 +669,8 @@ public class Maze implements IMaze {
     if (!startNode.getConnectedDirs().contains(dir)) {
       return false;
     }
-    // endPos = this.handleWrap(this.updatePosFromDirection(newStart, dir));
-    switch (dir) {
-      case NORTH:
-        endPos = this.handleWrap(new Position(newStart.getRow() - 1, newStart.getCol()));
-        break;
-      case WEST:
-        endPos = this.handleWrap(new Position(newStart.getRow(), newStart.getCol() - 1));
-        break;
-      case EAST:
-        endPos = this.handleWrap(new Position(newStart.getRow(), newStart.getCol() + 1));
-        break;
-      case SOUTH:
-        endPos = this.handleWrap(new Position(newStart.getRow() + 1, newStart.getCol()));
-        break;
-      default:
-        return false;
-    }
+    endPos = this.handleWrap(this.updatePosFromDirection(newStart, dir));
+
     if (this.board[endPos.getRow()][endPos.getCol()].getRoomType() == RoomType.HALLWAY) {
       List<Direction> dirs = new ArrayList<>(this.board[endPos.getRow()][endPos.getCol()].getConnectedDirs());
       dirs.remove(dir.opposite());

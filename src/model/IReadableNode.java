@@ -62,5 +62,9 @@ public interface IReadableNode {
    */
   boolean beenVisited();
 
+  /**
+   * Returns the attributes of the room.
+   * @return the room attributes
+   */
   List<RoomAttribute> getRoomAttributes();
 }

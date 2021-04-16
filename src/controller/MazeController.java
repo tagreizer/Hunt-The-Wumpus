@@ -1,17 +1,25 @@
 package controller;
 
 
-
 import model.Direction;
 import model.IMaze;
 import view.IMazeView;
 
-public class MazeController implements IMazeController, EventController{
-  private IMaze model;
-  private IMazeView view;
+/**
+ * Represents a controller and a listener for a maze/wumpus game.
+ */
+public class MazeController implements IMazeController, EventController {
+  private final IMaze model;
+  private final IMazeView view;
   private boolean gameIsRunning;
   private boolean modelChanged;
 
+  /**
+   * Creates the controller/listener for the given view and model.
+   *
+   * @param model the model to use for the game.
+   * @param view  the view to display the game.
+   */
   public MazeController(IMaze model, IMazeView view) {
     this.model = model;
     this.view = view;
@@ -20,6 +28,7 @@ public class MazeController implements IMazeController, EventController{
     this.view.setEventController(this);
 
   }
+
   @Override
   public void runGame() {
 
