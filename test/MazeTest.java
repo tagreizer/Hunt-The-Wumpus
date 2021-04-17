@@ -1,5 +1,6 @@
 
-import model.*;
+
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -7,6 +8,13 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
+
+import model.Direction;
+import model.IMaze;
+import model.IReadableNode;
+import model.Maze;
+import model.PlayerEffect;
+import model.Position;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -473,9 +481,10 @@ public class MazeTest {
             "+-0 +-+ 0 0 +-0 \n" +
             "|         | | | \n" +
             "0-B-+-0 +-#-+ G-\n" +
-            "| |     |     | \n",m.toString());
+            "| |     |     | \n", m.toString());
 
   }
+
   @Test
   public void sampleMazeGeneration2() {
     //used as an image for when i run the game with the view, so that i can see where i need to go
@@ -490,7 +499,7 @@ public class MazeTest {
             "+ U +-0-0-\n" +
             "|   |     \n" +
             "U-U + 0 G-\n" +
-            "    | | | \n",m.toString());
+            "    | | | \n", m.toString());
 
   }
 
@@ -506,11 +515,12 @@ public class MazeTest {
     assertTrue(m.getRecentEffects().contains(PlayerEffect.MISSED_WUMPUS));
     assertFalse(m.isGameOver());
     //hit wumpus
-    m.fireArrow(Direction.WEST,1);
+    m.fireArrow(Direction.WEST, 1);
     assertTrue(m.getRecentEffects().contains(PlayerEffect.SHOT_WUMPUS));
     assertTrue(m.isGameOver());
 
   }
+
   @Test
   public void testArrowsLost() {
     IMaze m = new Maze(8, 8, true, 0, 0, 7, 7, 10, 10, 325, 2);
@@ -522,12 +532,28 @@ public class MazeTest {
     assertTrue(m.getRecentEffects().contains(PlayerEffect.NO_ARROWS));
   }
 
+  @Test
+  public void testArrowsTooFarAndShort() {
+    IMaze m = new Maze(8, 8, true, 0, 0, 7, 7, 10, 10, 325, 2);
+
+    m.movePlayer(Direction.NORTH);
+    m.movePlayer(Direction.EAST);
+
+    assertFalse(m.isGameOver());
+    m.fireArrow(Direction.WEST, 9);
+    assertTrue(m.getRecentEffects().contains(PlayerEffect.MISSED_WUMPUS));
+    m.fireArrow(Direction.WEST, 1);
+    assertTrue(m.getRecentEffects().contains(PlayerEffect.MISSED_WUMPUS));
+    assertTrue(m.getRecentEffects().contains(PlayerEffect.NO_ARROWS));
+  }
+
   @Test(expected = IllegalArgumentException.class)
   public void badArrowInputs() {
     IMaze m = new Maze(8, 8, true, 0, 0, 7, 7, 10, 10, 325, 2);
     m.fireArrow(Direction.NORTH, -1);
 
   }
+
   @Test(expected = IllegalArgumentException.class)
   public void badArrowInputs2() {
     IMaze m = new Maze(8, 8, true, 0, 0, 7, 7, 10, 10, 325, 2);
@@ -543,7 +569,6 @@ public class MazeTest {
     m.fireArrow(Direction.NORTH, 3);
 
   }
-
 
 
 }

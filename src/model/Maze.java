@@ -660,7 +660,7 @@ public class Maze implements IMaze {
    * down rooms/hallways searching to see if the wumpus is hit. If its a hallway it will curve and
    * not count for distance, if its a room it contiunes straight but looses distance.
    *
-   * @param dir the direction the arrow is traveling
+   * @param dir      the direction the arrow is traveling
    * @param distance the distance for the arrow to travel.
    * @param newStart the position the arrow should start at.
    * @return if the arrow hit the wumpus.

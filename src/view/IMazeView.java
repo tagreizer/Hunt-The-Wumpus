@@ -53,12 +53,14 @@ public interface IMazeView {
 
   /**
    * Sets the player effects.
+   *
    * @param effects the player effects.
    */
   void setPlayerEffects(List<PlayerEffect> effects);
 
   /**
    * Displays an error string that is given.
+   *
    * @param error the error to be displayed.
    */
   void displayError(String error);

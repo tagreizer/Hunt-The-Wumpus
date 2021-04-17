@@ -20,7 +20,7 @@ public interface EventController {
    * Tells the event controller that the player should shoot an arrow in a direction with a specific
    * distance.
    *
-   * @param dir the direction
+   * @param dir      the direction
    * @param distance the distance
    */
   void shootArrow(Direction dir, int distance);

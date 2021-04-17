@@ -12,5 +12,4 @@ public interface IMazeController {
   void runGame();
 
 
-
 }

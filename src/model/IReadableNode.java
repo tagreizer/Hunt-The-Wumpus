@@ -64,6 +64,7 @@ public interface IReadableNode {
 
   /**
    * Returns the attributes of the room.
+   *
    * @return the room attributes
    */
   List<RoomAttribute> getRoomAttributes();

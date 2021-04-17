@@ -17,8 +17,9 @@ class Player {
 
   /**
    * Creates a player at the specified location.
-   *  @param row the row the player starts at.
-   * @param col the col the player starts at.
+   *
+   * @param row        the row the player starts at.
+   * @param col        the col the player starts at.
    * @param arrowCount the amount of arrows the player starts with.
    */
   Player(int row, int col, int arrowCount) {
@@ -83,6 +84,7 @@ class Player {
 
   /**
    * Returns the amount of arrows the player has left.
+   *
    * @return the amount of arrows.
    */
   int getArrowAmount() {
@@ -91,6 +93,7 @@ class Player {
 
   /**
    * Adds an effect to the player.
+   *
    * @param effect the effect to add
    */
   void addEffect(PlayerEffect effect) {
@@ -106,6 +109,7 @@ class Player {
 
   /**
    * Returns the recent effects on the player.
+   *
    * @return the effects.
    */
   List<PlayerEffect> getRecentEffects() {

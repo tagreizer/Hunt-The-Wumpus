@@ -3,7 +3,6 @@ package model;
 import java.util.Random;
 
 
-
 /**
  * A builder for a maze object, used by the main function to build a maze object on the fly.
  */
@@ -21,7 +20,6 @@ public class MazeBuilder {
   private int pitsPercentage;
   private long seed;
   private int arrowCount;
-
 
 
   /**
@@ -97,16 +95,19 @@ public class MazeBuilder {
   }
 
   /**
-   * Builds the maze object based off of the mazebuilder's specifications
+   * Builds the maze object based off of the mazebuilder's specifications.
+   *
    * @return the maze object
    */
   public IMaze build() {
     if (perfect) {
       return new Maze(this.rows, this.cols,
-              this.isWrapping, this.sRow, this.sCol, this.gRow, this.gCol, batsPercentage,pitsPercentage, this.seed,this.arrowCount);
+              this.isWrapping, this.sRow, this.sCol, this.gRow, this.gCol, batsPercentage,
+              pitsPercentage, this.seed, this.arrowCount);
     } else {
       return new Maze(this.rows, this.cols, this.wallsRemaining,
-              this.isWrapping, this.sRow, this.sCol, this.gRow, this.gCol, batsPercentage,pitsPercentage, this.seed,this.arrowCount);
+              this.isWrapping, this.sRow, this.sCol, this.gRow, this.gCol, batsPercentage,
+              pitsPercentage, this.seed, this.arrowCount);
     }
 
   }

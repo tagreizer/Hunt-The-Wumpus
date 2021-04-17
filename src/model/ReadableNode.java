@@ -14,6 +14,7 @@ class ReadableNode implements IReadableNode {
   protected final List<Direction> connectedDirections;
   protected boolean visited;
   protected final List<RoomAttribute> attributes;
+
   /**
    * Creates a readable node at the given position, with no connections and as an empty room.
    *
@@ -21,7 +22,7 @@ class ReadableNode implements IReadableNode {
    * @param col the col location
    */
   ReadableNode(int row, int col) {
-    this(row, col, new ArrayList<>(),  RoomType.EMPTY, false, new ArrayList<>());
+    this(row, col, new ArrayList<>(), RoomType.EMPTY, false, new ArrayList<>());
   }
 
   /**
@@ -31,7 +32,6 @@ class ReadableNode implements IReadableNode {
    * @param row                 the row location
    * @param col                 the col location
    * @param connectedDirections the directions this is connected in.
-
    * @param roomType            the type of room this node is.
    */
   protected ReadableNode(int row, int col, List<Direction> connectedDirections,

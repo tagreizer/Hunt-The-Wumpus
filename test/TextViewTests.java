@@ -13,7 +13,6 @@ import org.junit.Test;
 import java.io.StringReader;
 
 
-
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -23,7 +22,8 @@ public class TextViewTests {
 
   @Test
   public void tryingBadInputs() {
-    StringReader in = new StringReader("a sadf f 3 m  oiu null w  23 m 23 n s asf  w -1 s e 1 w 1 s w 1");
+    StringReader in = new StringReader("a sadf f 3 m " +
+            " oiu null w  23 m 23 n s asf  w -1 s e 1 w 1 s w 1");
     StringBuilder out = new StringBuilder("");
     IMaze m = new Maze(8, 8, true, 0, 0, 7, 7, 10, 10, 325, 2);
     IMazeView view = new TextMazeView(out, in);

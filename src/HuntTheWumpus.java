@@ -29,7 +29,8 @@ public final class HuntTheWumpus {
             mazeBuilder.setRows((Integer.parseInt(args[i + 1])));
             i++;
           } catch (Exception e) {
-            throw new IllegalArgumentException("-rows Must be followed by a valid int.");
+            System.out.println("-rows Must be followed by a valid int.");
+            System.exit(0);
           }
 
           break;
@@ -38,7 +39,8 @@ public final class HuntTheWumpus {
             mazeBuilder.setCols((Integer.parseInt(args[i + 1])));
             i++;
           } catch (Exception e) {
-            throw new IllegalArgumentException("-cols Must be followed by a valid int.");
+            System.out.println("-cols Must be followed by a valid int.");
+            System.exit(0);
           }
           break;
         case "-wallsRemaining":
@@ -46,7 +48,8 @@ public final class HuntTheWumpus {
             mazeBuilder.setWallsRemaining((Integer.parseInt(args[i + 1])));
             i++;
           } catch (Exception e) {
-            throw new IllegalArgumentException("-wallsRemaining Must be followed by a valid int.");
+            System.out.println("-wallsRemaining Must be followed by a valid int.");
+            System.exit(0);
           }
           break;
         case "-perfect":
@@ -66,7 +69,8 @@ public final class HuntTheWumpus {
             mazeBuilder.setsRow((Integer.parseInt(args[i + 1])));
             i++;
           } catch (Exception e) {
-            throw new IllegalArgumentException("-sRow Must be followed by a valid int.");
+            System.out.println("-sRow Must be followed by a valid int.");
+            System.exit(0);
           }
           break;
         case "-sCol":
@@ -74,7 +78,8 @@ public final class HuntTheWumpus {
             mazeBuilder.setsCol((Integer.parseInt(args[i + 1])));
             i++;
           } catch (Exception e) {
-            throw new IllegalArgumentException("-sCol Must be followed by a valid int.");
+            System.out.println("-sCol Must be followed by a valid int.");
+            System.exit(0);
           }
           break;
         case "-gRow":
@@ -82,7 +87,8 @@ public final class HuntTheWumpus {
             mazeBuilder.setgRow((Integer.parseInt(args[i + 1])));
             i++;
           } catch (Exception e) {
-            throw new IllegalArgumentException("-gRow Must be followed by a valid int.");
+            System.out.println("-gRow Must be followed by a valid int.");
+            System.exit(0);
           }
           break;
         case "-gCol":
@@ -90,7 +96,8 @@ public final class HuntTheWumpus {
             mazeBuilder.setgCol((Integer.parseInt(args[i + 1])));
             i++;
           } catch (Exception e) {
-            throw new IllegalArgumentException("-gCol Must be followed by a valid int.");
+            System.out.println("-gCol Must be followed by a valid int.");
+            System.exit(0);
           }
           break;
         case "-bats":
@@ -98,7 +105,8 @@ public final class HuntTheWumpus {
             mazeBuilder.setBatsPercentage((Integer.parseInt(args[i + 1])));
             i++;
           } catch (Exception e) {
-            throw new IllegalArgumentException("-bats Must be followed by a valid int.");
+            System.out.println("-bats Must be followed by a valid int.");
+            System.exit(0);
           }
           break;
         case "-pits":
@@ -106,7 +114,8 @@ public final class HuntTheWumpus {
             mazeBuilder.setPitsPercentage((Integer.parseInt(args[i + 1])));
             i++;
           } catch (Exception e) {
-            throw new IllegalArgumentException("-pits Must be followed by a valid int.");
+            System.out.println("-pits Must be followed by a valid int.");
+            System.exit(0);
           }
           break;
 
@@ -115,7 +124,8 @@ public final class HuntTheWumpus {
             mazeBuilder.setArrowCount((Integer.parseInt(args[i + 1])));
             i++;
           } catch (Exception e) {
-            throw new IllegalArgumentException("-arrows Must be followed by a valid int.");
+            System.out.println("-arrows Must be followed by a valid int.");
+            System.exit(0);
           }
           break;
 
@@ -124,14 +134,23 @@ public final class HuntTheWumpus {
             mazeBuilder.setSeed((Long.parseLong(args[i + 1])));
             i++;
           } catch (Exception e) {
-            throw new IllegalArgumentException("-seed Must be followed by a valid long.");
+            System.out.println("-seed Must be followed by a valid long.");
+            System.exit(0);
           }
           break;
         default:
-          throw new IllegalArgumentException("Not a valid input command");
+          System.out.println("Not a valid input command");
+          System.exit(0);
       }
     }
-    IMaze model = mazeBuilder.build();
+    IMaze model = null;
+    try {
+      model = mazeBuilder.build();
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      System.exit(0);
+    }
+
     IMazeController controller = new MazeController(model, view);
     controller.runGame();
 
