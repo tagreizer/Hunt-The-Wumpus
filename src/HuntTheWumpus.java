@@ -5,6 +5,8 @@ import controller.MazeController;
 import model.IMaze;
 import model.MazeBuilder;
 import view.IMazeView;
+import view.SwingMazeView;
+import view.SwingMazeViewOLd;
 import view.TextMazeView;
 
 /**
@@ -20,6 +22,7 @@ public final class HuntTheWumpus {
   public static void main(String[] args) {
     MazeBuilder mazeBuilder = new MazeBuilder();
     IMazeView view = new TextMazeView(System.out, new InputStreamReader(System.in));
+
 
 
     for (int i = 0; i < args.length; i++) {
@@ -138,6 +141,15 @@ public final class HuntTheWumpus {
             System.exit(0);
           }
           break;
+        case "-view":
+          try {
+            view = chooseView(args[i + 1]);
+            i++;
+          } catch (Exception e) {
+            System.out.println("-view Must be followed by a swing or text.");
+            System.exit(0);
+          }
+          break;
         default:
           System.out.println("Not a valid input command");
           System.exit(0);
@@ -151,9 +163,25 @@ public final class HuntTheWumpus {
       System.exit(0);
     }
 
+
+
+
     IMazeController controller = new MazeController(model, view);
     controller.runGame();
 
 
+  }
+
+  private static IMazeView chooseView(String type) {
+    switch (type) {
+      case "text":
+        return new TextMazeView(System.out, new InputStreamReader(System.in));
+
+      case "swing":
+        return new SwingMazeView();
+
+      default:
+        throw new IllegalArgumentException("Unsupported view type given. Supports text and swing.");
+    }
   }
 }

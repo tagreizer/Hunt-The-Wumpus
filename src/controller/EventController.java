@@ -25,5 +25,8 @@ public interface EventController {
    */
   void shootArrow(Direction dir, int distance);
 
+  void sendError(String error);
+
+
 
 }

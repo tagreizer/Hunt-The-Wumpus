@@ -51,6 +51,7 @@ public class MazeController implements IMazeController, EventController {
 
     }
 
+
     this.view.animateGameOver();
 
 
@@ -80,6 +81,11 @@ public class MazeController implements IMazeController, EventController {
       this.view.displayError(e.getMessage());
 
     }
+  }
+
+  @Override
+  public void sendError(String error) {
+
   }
 
 

@@ -169,6 +169,7 @@ public class Maze implements IMaze {
 
     //Sets start and End
     this.board[sRow][sCol].setRoomType(RoomType.START);
+    this.board[sRow][sCol].visit();
     this.board[gRow][gCol].setRoomType(RoomType.WUMPUS);
 
     //Converts rooms with two exits to hallways
@@ -616,6 +617,7 @@ public class Maze implements IMaze {
 
   @Override
   public boolean isGameOver() {
+
     List<PlayerEffect> effects = this.player1.getRecentEffects();
     return effects.contains(PlayerEffect.NO_ARROWS) || effects.contains(PlayerEffect.SHOT_WUMPUS)
             || effects.contains(PlayerEffect.RAN_INTO_WUMPUS)

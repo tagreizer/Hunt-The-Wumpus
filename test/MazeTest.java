@@ -269,6 +269,8 @@ public class MazeTest {
     } catch (IllegalStateException e) {
       assertEquals("The game is over", e.getMessage());
     }
+    List<List<IReadableNode>> nodes = m.getNodes();
+    assertTrue(nodes.get(1).get(1).beenVisited());
   }
 
   @Test
