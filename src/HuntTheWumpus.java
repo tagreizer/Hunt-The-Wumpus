@@ -6,7 +6,6 @@ import model.IMaze;
 import model.MazeBuilder;
 import view.IMazeView;
 import view.SwingMazeView;
-import view.SwingMazeViewOLd;
 import view.TextMazeView;
 
 /**

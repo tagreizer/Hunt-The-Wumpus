@@ -18,10 +18,15 @@ import model.RoomAttribute;
  * Represents a text based view for the maze wumpus game. Is player/controlled by text, and is
  * visualized by text as well.
  */
-public class TextMazeView extends AMazeView {
+public class TextMazeView implements IMazeView {
   private final Appendable output;
   private final Scanner scanner;
   private boolean shouldIShowEffects;
+  private EventController listener;
+  private List<List<IReadableNode>> nodes;
+  private Position playerPos;
+  private List<Direction> possibleMoves;
+  private List<PlayerEffect> effects;
 
   /**
    * Creates a text view with an output to write to and an input to read from.
@@ -30,10 +35,36 @@ public class TextMazeView extends AMazeView {
    * @param input  the place to write to.
    */
   public TextMazeView(Appendable output, Readable input) {
-    super();
+    this.listener = null;
+    this.nodes = new ArrayList<>();
+    this.playerPos = null;
+    this.possibleMoves = new ArrayList<>();
+    this.effects = new ArrayList<>();
     this.output = output;
     this.scanner = new Scanner(input);
     this.shouldIShowEffects = true;
+  }
+  @Override
+  public void setEventController(EventController listener) {
+    this.listener = listener;
+  }
+
+  @Override
+  public void setNodes(List<List<IReadableNode>> nodes) {
+    this.nodes = nodes;
+
+  }
+
+  @Override
+  public void setPlayerPos(Position pos) {
+    this.playerPos = pos;
+
+  }
+
+  @Override
+  public void setPossibleMoves(List<Direction> directions) {
+    this.possibleMoves = directions;
+
   }
 
 
@@ -307,7 +338,7 @@ public class TextMazeView extends AMazeView {
 
   @Override
   public void setPlayerEffects(List<PlayerEffect> effects) {
-    super.setPlayerEffects(effects);
+    this.effects = effects;
     this.shouldIShowEffects = true;
   }
 

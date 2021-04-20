@@ -2,6 +2,8 @@ package view;
 
 import java.awt.*;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.List;
@@ -17,13 +19,15 @@ import model.Position;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
 
-public class SwingMazeView extends JFrame implements IMazeView, KeyListener {
+public class SwingMazeView extends JFrame implements IMazeView, KeyListener, ActionListener {
   private final NodePanel nodePanel;
+  private final ArrowPanel arrowPanel;
   private boolean firstRender;
   private EventController listener;
 
   public SwingMazeView() {
     this.nodePanel = new NodePanel();
+    this.arrowPanel = new ArrowPanel();
     firstRender = true;
     this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     this.setTitle("Hunt The Wumpus");
@@ -32,20 +36,26 @@ public class SwingMazeView extends JFrame implements IMazeView, KeyListener {
 
   }
 
+  private void setUpPanels(List<List<IReadableNode>> nodes) {
+    nodePanel.setPreferredSize(new Dimension( nodes.get(0).size() * 64, nodes.size() * 64));
+
+    JScrollPane scrollBarAndPane = new JScrollPane(nodePanel,
+            VERTICAL_SCROLLBAR_AS_NEEDED,
+            HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    //this.setSize(new Dimension(1000, 1000));
+    this.add(arrowPanel, BorderLayout.WEST);
+    this.add(scrollBarAndPane, BorderLayout.CENTER);
+    this.pack();
+    this.setLocationRelativeTo(null); // center the frame
+    this.firstRender = false;
+  }
+
   @Override
   public void setNodes(List<List<IReadableNode>> nodes) {
     this.nodePanel.setNodes(nodes);
     //Allows the window to resize when the node list has a definitive size
     if (firstRender) {
-      nodePanel.setPreferredSize(new Dimension(nodes.size() * 64, nodes.get(0).size() * 64));
-      JScrollPane scrollBarAndPane = new JScrollPane(nodePanel,
-              VERTICAL_SCROLLBAR_AS_NEEDED,
-              HORIZONTAL_SCROLLBAR_AS_NEEDED);
-      this.setSize(new Dimension(1000, 1000));
-      this.add(scrollBarAndPane, BorderLayout.CENTER);
-      this.pack();
-      this.setLocationRelativeTo(null); // center the frame
-      this.firstRender = false;
+      this.setUpPanels(nodes);
     }
   }
 
@@ -114,6 +124,11 @@ public class SwingMazeView extends JFrame implements IMazeView, KeyListener {
 
   @Override
   public void keyReleased(KeyEvent e) {
+
+  }
+
+  @Override
+  public void actionPerformed(ActionEvent e) {
 
   }
 }
