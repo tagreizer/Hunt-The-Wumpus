@@ -58,6 +58,8 @@ public interface IMazeView {
    */
   void setPlayerEffects(List<PlayerEffect> effects);
 
+  void setArrowAmount(int arrowAmount);
+
   /**
    * Displays an error string that is given.
    *

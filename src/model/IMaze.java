@@ -63,5 +63,7 @@ public interface IMaze {
    */
   void fireArrow(Direction dir, int distance);
 
+  int getArrowAmount(boolean player1);
+
 
 }

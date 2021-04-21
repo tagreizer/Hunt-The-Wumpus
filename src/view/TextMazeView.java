@@ -342,6 +342,11 @@ public class TextMazeView implements IMazeView {
     this.shouldIShowEffects = true;
   }
 
+  @Override
+  public void setArrowAmount(int arrowAmount) {
+
+  }
+
 
   /**
    * Takes a string and writes it to the output.

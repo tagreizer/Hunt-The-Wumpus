@@ -50,6 +50,14 @@ public class MazeBuilder {
     this.cols = cols;
   }
 
+  public void randomizeRows() {
+    this.rows = new Random().nextInt(14)+2;
+  }
+
+  public void randomizeCols() {
+    this.cols = new Random().nextInt(14)+2;
+  }
+
   public void setWallsRemaining(int wallsRemaining) {
     this.wallsRemaining = wallsRemaining;
   }
@@ -78,6 +86,28 @@ public class MazeBuilder {
     this.gCol = gCol;
   }
 
+  public void randomizeSRow() {
+    this.sRow = new Random().nextInt(this.rows);
+  }
+
+  public void randomizeSCol() {
+    this.sCol = this.sRow = new Random().nextInt(this.cols);;
+  }
+
+  public void randomizeGRow() {
+    boolean sameAsStart = true;
+    do {
+      this.gRow = new Random().nextInt(this.rows);
+    } while (this.gRow == sRow);
+
+  }
+
+  public void randomizeGCol() {
+    do {
+      this.gCol = new Random().nextInt(this.cols);
+    } while (this.gCol == sCol);
+  }
+
   public void setSeed(long seed) {
     this.seed = seed;
   }
@@ -88,6 +118,18 @@ public class MazeBuilder {
 
   public void setPitsPercentage(int pitsPercentage) {
     this.pitsPercentage = pitsPercentage;
+  }
+
+  public void randomizeSeed() {
+    this.seed = new Random().nextLong();
+  }
+
+  public void randomizeBatsPercentage( ) {
+    this.batsPercentage = new Random().nextInt(30);
+  }
+
+  public void randomizePitsPercentage() {
+    this.pitsPercentage = new Random().nextInt(30);
   }
 
   public void setArrowCount(int arrowCount) {

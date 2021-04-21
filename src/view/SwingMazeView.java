@@ -24,16 +24,14 @@ public class SwingMazeView extends JFrame implements IMazeView, KeyListener, Act
   private final ArrowPanel arrowPanel;
   private boolean firstRender;
   private EventController listener;
-  private Direction arrowDir;
-  private int arrowDistance;
+  private List<PlayerEffect> playerEffects;
 
 
   public SwingMazeView() {
     this.nodePanel = new NodePanel();
-    this.arrowPanel = new ArrowPanel();
+    this.arrowPanel = new ArrowPanel(this);
     firstRender = true;
-    this.arrowDistance = 1;
-    this.arrowDir = null;
+
 
     this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     this.setTitle("Hunt The Wumpus");
@@ -64,6 +62,7 @@ public class SwingMazeView extends JFrame implements IMazeView, KeyListener, Act
     if (firstRender) {
       this.setUpPanels(nodes);
     }
+
   }
 
   @Override
@@ -78,6 +77,18 @@ public class SwingMazeView extends JFrame implements IMazeView, KeyListener, Act
 
   @Override
   public void setPlayerEffects(List<PlayerEffect> effects) {
+    this.playerEffects = effects;
+    if (this.playerEffects.contains(PlayerEffect.MISSED_WUMPUS)) {
+      JOptionPane.showMessageDialog(this, "That arrow missed the Wumpus",
+              "Missed",
+              JOptionPane.PLAIN_MESSAGE);
+    }
+
+  }
+
+  @Override
+  public void setArrowAmount(int arrowAmount) {
+    arrowPanel.setArrowAmount(arrowAmount);
 
   }
 
@@ -96,6 +107,39 @@ public class SwingMazeView extends JFrame implements IMazeView, KeyListener, Act
   public void animateGameOver() {
     this.setVisible(true);
     this.repaint();
+    String titlemsg = "";
+    String effectMsg = "";
+    for (PlayerEffect effect : this.playerEffects) {
+      switch (effect) {
+        case FELL_INTO_PIT:
+          effectMsg = "AHHHHH....\nYou fell into a pit and died!";
+          titlemsg = "Game Over!\nBetter luck next time!";
+          break;
+        case RAN_INTO_WUMPUS:
+          effectMsg = "CHOMP CHOMP CHOMP...\nYou have been eaten by the Wumpus!";
+          titlemsg = "Game Over!\nBetter luck next time!";
+          break;
+        case NO_ARROWS:
+          effectMsg = "RAWRRRRRRRRR...\nYou're out of " +
+                  "arrows and the Wumpus knows!\nHe came to eat you!";
+          titlemsg = "Game Over!\nBetter luck next time!";
+          break;
+
+        case SHOT_WUMPUS:
+          titlemsg = "You Win!\nCongratulations!";
+
+          effectMsg = "RAWRRRRRrrrr...\nYou hear the " +
+                  "screams of pain from a Wumpus pierced with an arrow!";
+          break;
+        default:
+          //others do not have a game over msg.
+
+      }
+    }
+
+    JOptionPane.showMessageDialog(this, effectMsg,
+            titlemsg,
+            JOptionPane.PLAIN_MESSAGE);
 
   }
 
@@ -141,4 +185,7 @@ public class SwingMazeView extends JFrame implements IMazeView, KeyListener, Act
   public void actionPerformed(ActionEvent e) {
 
   }
+
+
+
 }

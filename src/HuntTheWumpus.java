@@ -5,6 +5,7 @@ import controller.MazeController;
 import model.IMaze;
 import model.MazeBuilder;
 import view.IMazeView;
+import view.SwingMazeCreator;
 import view.SwingMazeView;
 import view.TextMazeView;
 
@@ -155,12 +156,15 @@ public final class HuntTheWumpus {
       }
     }
     IMaze model = null;
-    try {
-      model = mazeBuilder.build();
-    } catch (Exception e) {
-      System.out.println(e.getMessage());
-      System.exit(0);
-    }
+    SwingMazeCreator swingMazeCreator = new SwingMazeCreator(new MazeBuilder());
+    model = swingMazeCreator.create();
+
+//    try {
+//      model = mazeBuilder.build();
+//    } catch (Exception e) {
+//      System.out.println(e.getMessage());
+//      System.exit(0);
+//    }
 
 
 

@@ -16,6 +16,7 @@ public class Maze implements IMaze {
   private final IWritableNode[][] board;
   private final List<IEdge> edges;
   private final Player player1;
+  private final Player player2;
   private final long seed;
 
 
@@ -184,6 +185,7 @@ public class Maze implements IMaze {
 
     //rest of maze data
     this.player1 = new Player(sRow, sCol, arrowCount);
+    this.player2 = new Player(sRow, sCol, arrowCount);
     this.board[sRow][sCol].shouldIContainPlayer(true);
     this.seed = seed;
 
@@ -655,6 +657,15 @@ public class Maze implements IMaze {
 
     }
 
+  }
+
+  @Override
+  public int getArrowAmount(boolean player1) {
+    if (player1) {
+      return this.player1.getArrowAmount();
+    } else {
+      return this.player2.getArrowAmount();
+    }
   }
 
   /**

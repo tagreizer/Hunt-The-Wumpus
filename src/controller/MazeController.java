@@ -27,6 +27,7 @@ public class MazeController implements IMazeController, EventController {
     this.modelChanged = true;
     this.view.setEventController(this);
 
+
   }
 
   @Override
@@ -34,10 +35,7 @@ public class MazeController implements IMazeController, EventController {
 
     while (gameIsRunning) {
       if (modelChanged) {
-        this.view.setNodes(this.model.getNodes());
-        this.view.setPlayerPos(this.model.getPlayerLocation());
-        this.view.setPossibleMoves(this.model.possiblePlayerMoves());
-        this.view.setPlayerEffects(this.model.getRecentEffects());
+        this.updateView(true);
 
         this.modelChanged = false;
 
@@ -55,6 +53,14 @@ public class MazeController implements IMazeController, EventController {
     this.view.animateGameOver();
 
 
+  }
+
+  private void updateView(boolean player1) {
+    this.view.setNodes(this.model.getNodes());
+    this.view.setPlayerPos(this.model.getPlayerLocation());
+    this.view.setPossibleMoves(this.model.possiblePlayerMoves());
+    this.view.setPlayerEffects(this.model.getRecentEffects());
+    this.view.setArrowAmount(this.model.getArrowAmount(player1));
   }
 
 
@@ -77,7 +83,7 @@ public class MazeController implements IMazeController, EventController {
     try {
       this.model.fireArrow(dir, distance);
       this.modelChanged = true;
-    } catch (IllegalArgumentException e) {
+    } catch (IllegalArgumentException | IllegalStateException e) {
       this.view.displayError(e.getMessage());
 
     }
