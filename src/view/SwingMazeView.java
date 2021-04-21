@@ -19,16 +19,22 @@ import model.Position;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
 
-public class SwingMazeView extends JFrame implements IMazeView, KeyListener, ActionListener {
+public class SwingMazeView extends JFrame implements IMazeView, KeyListener, ActionListener{
   private final NodePanel nodePanel;
   private final ArrowPanel arrowPanel;
   private boolean firstRender;
   private EventController listener;
+  private Direction arrowDir;
+  private int arrowDistance;
+
 
   public SwingMazeView() {
     this.nodePanel = new NodePanel();
     this.arrowPanel = new ArrowPanel();
     firstRender = true;
+    this.arrowDistance = 1;
+    this.arrowDir = null;
+
     this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     this.setTitle("Hunt The Wumpus");
     this.addKeyListener(this);
@@ -37,7 +43,7 @@ public class SwingMazeView extends JFrame implements IMazeView, KeyListener, Act
   }
 
   private void setUpPanels(List<List<IReadableNode>> nodes) {
-    nodePanel.setPreferredSize(new Dimension( nodes.get(0).size() * 64, nodes.size() * 64));
+    nodePanel.setPreferredSize(new Dimension(nodes.get(0).size() * 64, nodes.size() * 64));
 
     JScrollPane scrollBarAndPane = new JScrollPane(nodePanel,
             VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -48,6 +54,7 @@ public class SwingMazeView extends JFrame implements IMazeView, KeyListener, Act
     this.pack();
     this.setLocationRelativeTo(null); // center the frame
     this.firstRender = false;
+    this.setFocusable(true);
   }
 
   @Override
@@ -95,12 +102,12 @@ public class SwingMazeView extends JFrame implements IMazeView, KeyListener, Act
   @Override
   public void setEventController(EventController listener) {
     this.listener = listener;
-    this.nodePanel.setListener(listener);
+    this.arrowPanel.setEventListener(listener);
   }
 
   @Override
   public void keyTyped(KeyEvent e) {
-
+    //not used
   }
 
   @Override
@@ -119,13 +126,16 @@ public class SwingMazeView extends JFrame implements IMazeView, KeyListener, Act
       case KeyEvent.VK_RIGHT:
         listener.movePlayer(Direction.EAST);
         break;
+      default:
+        System.out.println(e.toString());
     }
   }
 
   @Override
   public void keyReleased(KeyEvent e) {
-
+    //not used
   }
+
 
   @Override
   public void actionPerformed(ActionEvent e) {

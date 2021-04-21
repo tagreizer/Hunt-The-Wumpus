@@ -19,7 +19,6 @@ import model.RoomAttribute;
 
 final class NodePanel extends JPanel {
   private List<List<IReadableNode>> nodes;
-  private EventController listener;
 
   NodePanel() {
     super();
@@ -74,9 +73,6 @@ final class NodePanel extends JPanel {
     return new Position(position.getRow() * 64, position.getCol() * 64);
   }
 
-  public void setListener(EventController listener) {
-    this.listener = listener;
-  }
 
   private Image selectTypeImage(IReadableNode node) throws IOException{
     Image typeImage = null;
