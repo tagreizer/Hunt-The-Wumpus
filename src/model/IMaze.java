@@ -51,7 +51,7 @@ public interface IMaze {
    *
    * @return the recent player effects
    */
-  List<PlayerEffect> getRecentEffects();
+  List<List<PlayerEffect>> getRecentEffects();
 
   /**
    * Shoots an arrow in a specified direction. The arrow can curve through hallways, but travels

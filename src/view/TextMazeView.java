@@ -26,7 +26,7 @@ public class TextMazeView implements IMazeView {
   private List<List<IReadableNode>> nodes;
   private Position playerPos;
   private List<Direction> possibleMoves;
-  private List<PlayerEffect> effects;
+  private List<List<PlayerEffect>> effects;
 
   /**
    * Creates a text view with an output to write to and an input to read from.
@@ -121,22 +121,29 @@ public class TextMazeView implements IMazeView {
    */
   private String decideGameOverMsg() {
     StringBuilder builder = new StringBuilder();
-    for (PlayerEffect effect : this.effects) {
-      switch (effect) {
-        case FELL_INTO_PIT:
-        case RAN_INTO_WUMPUS:
-        case NO_ARROWS:
-          builder.append("Game Over!\nBetter luck next time!");
-          break;
+    for (int i = 0; i< this.effects.size(); i++) {
+      List<PlayerEffect> effectList = this.effects.get(i);
+      builder.append("Player");
+      builder.append(i + 1);
+      builder.append("'s Outcome:\n");
+      for (PlayerEffect effect : effectList) {
+        switch (effect) {
+          case FELL_INTO_PIT:
+          case RAN_INTO_WUMPUS:
+          case NO_ARROWS:
+            builder.append("Game Over!\nBetter luck next time!");
+            break;
 
-        case SHOT_WUMPUS:
-          builder.append("You Win!\nCongratulations!");
-          break;
-        default:
-          //others do not have a game over msg.
+          case SHOT_WUMPUS:
+            builder.append("You Win!\nCongratulations!");
+            break;
+          default:
+            //others do not have a game over msg.
 
+        }
       }
     }
+
     return builder.toString();
   }
 
@@ -147,35 +154,42 @@ public class TextMazeView implements IMazeView {
    */
   private String playerEffectMsg() {
     StringBuilder builder = new StringBuilder();
-    for (PlayerEffect effect : this.effects) {
-      switch (effect) {
-        case FELL_INTO_PIT:
-          builder.append("AHHHHH....\nYou fell into a pit and died!");
-          break;
-        case GRABBED_BY_BAT:
-          builder.append("WHOOOOSH...\nA bat grabbed you and flew you to another cave!");
-          break;
-        case AVOIDED_BAT:
-          builder.append("WHOOOOSH...\nA bat just missed you!");
-          break;
-        case RAN_INTO_WUMPUS:
-          builder.append("CHOMP CHOMP CHOMP...\nYou have been eaten by the Wumpus!");
-          break;
-        case SHOT_WUMPUS:
-          builder.append("RAWRRRRRrrrr...\nYou hear the " +
-                  "screams of pain from a Wumpus pierced with an arrow!");
-          break;
-        case MISSED_WUMPUS:
-          builder.append("Clank...\nYou hear your arrow echo off stone! You Missed!");
-          break;
-        case NO_ARROWS:
-          builder.append("RAWRRRRRRRRR...\nYou're out of " +
-                  "arrows and the Wumpus knows!\nHe came to eat you!");
-          break;
-        default:
-          //do nothing for other ones.
+    for (int i = 0; i< this.effects.size(); i++) {
+      List<PlayerEffect> effectList = this.effects.get(i);
+      builder.append("Player");
+      builder.append(i + 1);
+      builder.append("'s Effects:\n");
+      for (PlayerEffect effect : effectList) {
+        switch (effect) {
+          case FELL_INTO_PIT:
+            builder.append("AHHHHH....\nYou fell into a pit and died!");
+            break;
+          case GRABBED_BY_BAT:
+            builder.append("WHOOOOSH...\nA bat grabbed you and flew you to another cave!");
+            break;
+          case AVOIDED_BAT:
+            builder.append("WHOOOOSH...\nA bat just missed you!");
+            break;
+          case RAN_INTO_WUMPUS:
+            builder.append("CHOMP CHOMP CHOMP...\nYou have been eaten by the Wumpus!");
+            break;
+          case SHOT_WUMPUS:
+            builder.append("RAWRRRRRrrrr...\nYou hear the " +
+                    "screams of pain from a Wumpus pierced with an arrow!");
+            break;
+          case MISSED_WUMPUS:
+            builder.append("Clank...\nYou hear your arrow echo off stone! You Missed!");
+            break;
+          case NO_ARROWS:
+            builder.append("RAWRRRRRRRRR...\nYou're out of " +
+                    "arrows and the Wumpus knows!\nHe came to eat you!");
+            break;
+          default:
+            //do nothing for other ones.
+        }
+
+        builder.append("\n");
       }
-      builder.append("\n");
     }
 
     return builder.toString();
@@ -337,7 +351,7 @@ public class TextMazeView implements IMazeView {
   }
 
   @Override
-  public void setPlayerEffects(List<PlayerEffect> effects) {
+  public void setPlayerEffects(List<List<PlayerEffect>> effects) {
     this.effects = effects;
     this.shouldIShowEffects = true;
   }
@@ -380,6 +394,11 @@ public class TextMazeView implements IMazeView {
 
   @Override
   public void close() {
+    //does nothing for this type
+  }
+
+  @Override
+  public void open() {
     //does nothing for this type
   }
 }

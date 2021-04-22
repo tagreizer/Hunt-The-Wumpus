@@ -4,11 +4,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 
 import controller.EventController;
+import model.MazeBuilder;
 
 public class RestartAndTurnPanel extends JPanel implements ActionListener {
 
@@ -66,9 +68,12 @@ public class RestartAndTurnPanel extends JPanel implements ActionListener {
         //parentPanel.dispatchEvent(new WindowEvent(parentPanel, WindowEvent.WINDOW_CLOSING));
         //parentPanel.setVisible(false);
 
-        listener.newGame();
 
-        break;
+
+          listener.newGame();
+
+
+          break;
       default:
         parentPanel.requestFocus();
 

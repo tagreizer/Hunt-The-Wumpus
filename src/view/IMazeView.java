@@ -56,7 +56,7 @@ public interface IMazeView {
    *
    * @param effects the player effects.
    */
-  void setPlayerEffects(List<PlayerEffect> effects);
+  void setPlayerEffects(List<List<PlayerEffect>> effects);
 
   void setArrowAmount(int arrowAmount);
 
@@ -73,5 +73,7 @@ public interface IMazeView {
 
   //Possibly get rid of. Dont know what to do.
   void close();
+
+  void open();
 
 }

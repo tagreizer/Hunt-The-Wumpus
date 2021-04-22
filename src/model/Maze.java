@@ -724,8 +724,12 @@ public class Maze implements IMaze {
   }
 
   @Override
-  public List<PlayerEffect> getRecentEffects() {
-    return this.choosePlayer().getRecentEffects();
+  public List<List<PlayerEffect>> getRecentEffects() {
+    List<List<PlayerEffect>> effectsList = new ArrayList<>();
+    for (Player player : this.players) {
+      effectsList.add(player.getRecentEffects());
+    }
+    return effectsList;
   }
 
   @Override

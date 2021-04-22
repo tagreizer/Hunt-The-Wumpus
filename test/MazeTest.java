@@ -514,11 +514,11 @@ public class MazeTest {
     m.movePlayer(Direction.NORTH);
     // shoot too far
     m.fireArrow(Direction.WEST, 2);
-    assertTrue(m.getRecentEffects().contains(PlayerEffect.MISSED_WUMPUS));
+    assertTrue(m.getRecentEffects().get(0).contains(PlayerEffect.MISSED_WUMPUS));
     assertFalse(m.isGameOver());
     //hit wumpus
     m.fireArrow(Direction.WEST, 1);
-    assertTrue(m.getRecentEffects().contains(PlayerEffect.SHOT_WUMPUS));
+    assertTrue(m.getRecentEffects().get(0).contains(PlayerEffect.SHOT_WUMPUS));
     assertTrue(m.isGameOver());
 
   }
@@ -531,7 +531,7 @@ public class MazeTest {
     m.fireArrow(Direction.NORTH, 2);
 
     assertTrue(m.isGameOver());
-    assertTrue(m.getRecentEffects().contains(PlayerEffect.NO_ARROWS));
+    assertTrue(m.getRecentEffects().get(0).contains(PlayerEffect.NO_ARROWS));
   }
 
   @Test
@@ -543,10 +543,10 @@ public class MazeTest {
 
     assertFalse(m.isGameOver());
     m.fireArrow(Direction.WEST, 9);
-    assertTrue(m.getRecentEffects().contains(PlayerEffect.MISSED_WUMPUS));
+    assertTrue(m.getRecentEffects().get(0).contains(PlayerEffect.MISSED_WUMPUS));
     m.fireArrow(Direction.WEST, 1);
-    assertTrue(m.getRecentEffects().contains(PlayerEffect.MISSED_WUMPUS));
-    assertTrue(m.getRecentEffects().contains(PlayerEffect.NO_ARROWS));
+    assertTrue(m.getRecentEffects().get(0).contains(PlayerEffect.MISSED_WUMPUS));
+    assertTrue(m.getRecentEffects().get(0).contains(PlayerEffect.NO_ARROWS));
   }
 
   @Test(expected = IllegalArgumentException.class)
