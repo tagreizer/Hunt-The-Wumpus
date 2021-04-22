@@ -19,17 +19,20 @@ import model.Position;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
 
-public class SwingMazeView extends JFrame implements IMazeView, KeyListener, ActionListener{
+public class SwingMazeView extends JFrame implements IMazeView, KeyListener, ActionListener {
   private final NodePanel nodePanel;
   private final ArrowPanel arrowPanel;
+  private final RestartAndTurnPanel restartAndTurnPanel;
   private boolean firstRender;
   private EventController listener;
   private List<PlayerEffect> playerEffects;
+  private int turnNum;
 
 
   public SwingMazeView() {
     this.nodePanel = new NodePanel();
     this.arrowPanel = new ArrowPanel(this);
+    this.restartAndTurnPanel = new RestartAndTurnPanel(this);
     firstRender = true;
 
 
@@ -49,6 +52,7 @@ public class SwingMazeView extends JFrame implements IMazeView, KeyListener, Act
     //this.setSize(new Dimension(1000, 1000));
     this.add(arrowPanel, BorderLayout.WEST);
     this.add(scrollBarAndPane, BorderLayout.CENTER);
+    this.add(restartAndTurnPanel, BorderLayout.EAST);
     this.pack();
     this.setLocationRelativeTo(null); // center the frame
     this.firstRender = false;
@@ -79,7 +83,8 @@ public class SwingMazeView extends JFrame implements IMazeView, KeyListener, Act
   public void setPlayerEffects(List<PlayerEffect> effects) {
     this.playerEffects = effects;
     if (this.playerEffects.contains(PlayerEffect.MISSED_WUMPUS)) {
-      JOptionPane.showMessageDialog(this, "That arrow missed the Wumpus",
+      JOptionPane.showMessageDialog(this, "PLayer" + this.turnNum
+                      + "'s arrow missed the Wumpus",
               "Missed",
               JOptionPane.PLAIN_MESSAGE);
     }
@@ -93,8 +98,26 @@ public class SwingMazeView extends JFrame implements IMazeView, KeyListener, Act
   }
 
   @Override
+  public void setTurn(int playerNumber) {
+    this.restartAndTurnPanel.setPlayerTurn(playerNumber);
+    this.turnNum = playerNumber;
+  }
+
+  @Override
   public void displayError(String error) {
 
+  }
+
+  @Override
+  public boolean shouldQuit() {
+    return false;
+  }
+
+  @Override
+  public void close() {
+    this.setVisible(false);
+    this.setFocusable(false);
+    this.dispose();
   }
 
   @Override
@@ -143,10 +166,12 @@ public class SwingMazeView extends JFrame implements IMazeView, KeyListener, Act
 
   }
 
+
   @Override
   public void setEventController(EventController listener) {
     this.listener = listener;
     this.arrowPanel.setEventListener(listener);
+    this.restartAndTurnPanel.setEventListener(listener);
   }
 
   @Override
@@ -185,7 +210,6 @@ public class SwingMazeView extends JFrame implements IMazeView, KeyListener, Act
   public void actionPerformed(ActionEvent e) {
 
   }
-
 
 
 }

@@ -60,11 +60,18 @@ public interface IMazeView {
 
   void setArrowAmount(int arrowAmount);
 
+  void setTurn(int playerNumber);
+
   /**
    * Displays an error string that is given.
    *
    * @param error the error to be displayed.
    */
   void displayError(String error);
+
+  boolean shouldQuit();
+
+  //Possibly get rid of. Dont know what to do.
+  void close();
 
 }

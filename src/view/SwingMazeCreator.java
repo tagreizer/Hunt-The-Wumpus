@@ -45,6 +45,9 @@ public class SwingMazeCreator extends JFrame implements ActionListener{
         }
         JPanel perfectCont = new JPanel();
         perfect = new JCheckBox("PerfectMaze");
+        if (perfect == null) {
+            throw new IllegalStateException("What the fuck");
+        }
         perfectCont.add(perfect);
 
         JPanel wrappingCont = new JPanel();
@@ -158,7 +161,7 @@ public class SwingMazeCreator extends JFrame implements ActionListener{
         }
         builder.setPerfect(this.perfect.isSelected());
         builder.setWrapping(this.wrapping.isSelected());
-        //ADD TWO PLAYER
+        builder.setPlayerCount(this.players2.isSelected()? 2:1);
 
         return builder.build();
     }

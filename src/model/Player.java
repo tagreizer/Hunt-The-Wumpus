@@ -13,19 +13,21 @@ class Player {
   private Position position;
   private int arrowAmount;
   private final List<PlayerEffect> recentEffects;
+  private int playerNum;
 
 
   /**
    * Creates a player at the specified location.
-   *
-   * @param row        the row the player starts at.
+   *  @param row        the row the player starts at.
    * @param col        the col the player starts at.
    * @param arrowCount the amount of arrows the player starts with.
+   * @param playerNum
    */
-  Player(int row, int col, int arrowCount) {
+  Player(int row, int col, int arrowCount, int playerNum) {
     this.position = new Position(row, col);
     this.arrowAmount = arrowCount;
     this.recentEffects = new ArrayList<>();
+    this.playerNum = playerNum;
 
   }
 
@@ -105,6 +107,10 @@ class Player {
    */
   void clearEffects() {
     this.recentEffects.clear();
+  }
+
+  int getPlayerNum() {
+    return this.playerNum;
   }
 
   /**

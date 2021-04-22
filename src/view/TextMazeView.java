@@ -347,6 +347,11 @@ public class TextMazeView implements IMazeView {
 
   }
 
+  @Override
+  public void setTurn(int playerNumber) {
+
+  }
+
 
   /**
    * Takes a string and writes it to the output.
@@ -366,5 +371,15 @@ public class TextMazeView implements IMazeView {
     this.outputString(error);
 
 
+  }
+
+  @Override
+  public boolean shouldQuit() {
+    return true;
+  }
+
+  @Override
+  public void close() {
+    //does nothing for this type
   }
 }

@@ -36,7 +36,7 @@ final class ArrowPanel extends JPanel implements ActionListener {
     ArrowPanel(JFrame parentPanel) {
         super();
         this.parentPanel = parentPanel;
-        this.setPreferredSize(new Dimension(200, 200));
+        this.setPreferredSize(new Dimension(200, 210));
         this.setBackground(Color.GRAY);
         this.arrowDistance = 1;
         this.arrowDir = null;

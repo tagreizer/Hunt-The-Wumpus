@@ -27,6 +27,10 @@ public interface EventController {
 
   void sendError(String error);
 
+  void restartGame();
+
+  void newGame();
+
 
 
 }

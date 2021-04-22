@@ -3,16 +3,20 @@ package controller;
 
 import model.Direction;
 import model.IMaze;
+import model.MazeBuilder;
 import view.IMazeView;
+import view.SwingMazeCreator;
+import view.SwingMazeView;
 
 /**
  * Represents a controller and a listener for a maze/wumpus game.
  */
 public class MazeController implements IMazeController, EventController {
-  private final IMaze model;
-  private final IMazeView view;
+  private IMaze model;
+  private IMazeView view;
   private boolean gameIsRunning;
   private boolean modelChanged;
+  private boolean restarting;
 
   /**
    * Creates the controller/listener for the given view and model.
@@ -26,6 +30,7 @@ public class MazeController implements IMazeController, EventController {
     this.gameIsRunning = true;
     this.modelChanged = true;
     this.view.setEventController(this);
+    this.restarting = false;
 
 
   }
@@ -33,14 +38,30 @@ public class MazeController implements IMazeController, EventController {
   @Override
   public void runGame() {
 
+
     while (gameIsRunning) {
+
+
       if (modelChanged) {
-        this.updateView(true);
+        if (restarting) {
+          this.view.close();
+          SwingMazeCreator newCreator = new SwingMazeCreator(new MazeBuilder());
+          this.model = newCreator.create();
+          this.view = new SwingMazeView();
+
+          view.setEventController(this);
+          restarting = false;
+
+        }
+        this.updateView();
 
         this.modelChanged = false;
 
         if (this.model.isGameOver()) {
-          break;
+          this.view.animateGameOver();
+          if (this.view.shouldQuit()) {
+            break;
+          }
         }
       }
 
@@ -50,17 +71,16 @@ public class MazeController implements IMazeController, EventController {
     }
 
 
-    this.view.animateGameOver();
-
-
   }
 
-  private void updateView(boolean player1) {
+  private void updateView() {
     this.view.setNodes(this.model.getNodes());
+    this.view.setTurn(this.model.playerNumTurn());
     this.view.setPlayerPos(this.model.getPlayerLocation());
     this.view.setPossibleMoves(this.model.possiblePlayerMoves());
     this.view.setPlayerEffects(this.model.getRecentEffects());
-    this.view.setArrowAmount(this.model.getArrowAmount(player1));
+    this.view.setArrowAmount(this.model.getArrowAmount());
+
   }
 
 
@@ -91,6 +111,37 @@ public class MazeController implements IMazeController, EventController {
 
   @Override
   public void sendError(String error) {
+
+  }
+
+  @Override
+  public void restartGame() {
+    IMaze oldModel = this.model;
+    this.model = this.model.restart();
+    this.modelChanged = true;
+    if (oldModel.isGameOver()) {
+      //this.updateView();
+      System.out.println("UGH");
+      //this.runGame();
+    }
+
+
+  }
+
+  @Override
+  public void newGame() {
+    this.gameIsRunning = false;
+    this.restarting = true;
+
+   // SwingMazeCreator newCreator = new SwingMazeCreator(new MazeBuilder());
+
+//    this.model = null;
+//    this.view = null;
+
+    //this.model = newCreator.create();
+
+
+    this.modelChanged = true;
 
   }
 

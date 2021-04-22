@@ -17,7 +17,10 @@ public class Maze implements IMaze {
   private final List<IEdge> edges;
   private final Player player1;
   private final Player player2;
+  private Player[] players;
+  private int turn;
   private final long seed;
+  private int[] restartParams;
 
 
   /**
@@ -117,6 +120,27 @@ public class Maze implements IMaze {
   /**
    * Generates a Maze using a given seed.
    *
+   * @param rows       the rows in the maze
+   * @param cols       the cols in the maze
+   * @param isWrapping whether or not the maze wraps.
+   * @param sRow       the starting point row
+   * @param sCol       the starting point col
+   * @param gRow       the goal row
+   * @param gCol       the goal col
+   * @param seed       the seed for the maze to build its edges from
+   * @param arrowCount the amount of arrows the player gets
+   */
+  public Maze(int rows, int cols, boolean isWrapping,
+              int sRow, int sCol, int gRow, int gCol,
+              int percentBats, int percentPits, long seed, int arrowCount, int playerCount) {
+    this(rows, cols, isWrapping ? (rows * cols) + 1
+                    : ((cols * (rows - 1)) + (rows * (cols - 1))) - (rows * cols) + 1,
+            isWrapping, sRow, sCol, gRow, gCol, percentBats, percentPits, seed, arrowCount, playerCount);
+
+  }
+  /**
+   * Generates a Maze using a given seed.
+   *
    * @param rows           the rows in the maze
    * @param cols           the cols in the maze
    * @param wallsRemaining the walls remaining when the maze is built
@@ -131,6 +155,28 @@ public class Maze implements IMaze {
   public Maze(int rows, int cols, int wallsRemaining, boolean isWrapping,
               int sRow, int sCol, int gRow, int gCol,
               int percentBats, int percentPits, long seed, int arrowCount) {
+    this(rows, cols, wallsRemaining,
+            isWrapping, sRow, sCol, gRow, gCol, percentBats, percentPits, seed, arrowCount,1);
+
+  }
+
+  /**
+   * Generates a Maze using a given seed.
+   *
+   * @param rows           the rows in the maze
+   * @param cols           the cols in the maze
+   * @param wallsRemaining the walls remaining when the maze is built
+   * @param isWrapping     whether or not the maze wraps.
+   * @param sRow           the starting point row
+   * @param sCol           the starting point col
+   * @param gRow           the goal row
+   * @param gCol           the goal col
+   * @param seed           the seed for the maze to build its edges from
+   * @param arrowCount     the number of arrows the player gets
+   */
+  public Maze(int rows, int cols, int wallsRemaining, boolean isWrapping,
+              int sRow, int sCol, int gRow, int gCol,
+              int percentBats, int percentPits, long seed, int arrowCount, int players) {
     if (rows < 1 || cols < 1 || rows + cols == 2) {
       throw new IllegalArgumentException("You must have a maze of more than 1 room");
     }
@@ -147,6 +193,11 @@ public class Maze implements IMaze {
     if (arrowCount < 1) {
       throw new IllegalArgumentException("A player must have a positive amount of arrows");
     }
+    if (players < 0 || players > 2) {
+      throw new IllegalArgumentException("Currently only supports 1 or 2 players");
+    }
+    this.restartParams = new int[]{rows, cols, wallsRemaining, isWrapping ? 1 : 0, sRow, sCol,
+            gRow, gCol, percentBats, percentPits, arrowCount, players};
     this.board = new IWritableNode[rows][cols];
     this.edges = new ArrayList<>();
     int totalWalls;
@@ -183,11 +234,23 @@ public class Maze implements IMaze {
     //gives warning to special's neighbors
     this.applyAttributesToNeighbors();
 
+    this.players = new Player[players];
+
     //rest of maze data
-    this.player1 = new Player(sRow, sCol, arrowCount);
-    this.player2 = new Player(sRow, sCol, arrowCount);
-    this.board[sRow][sCol].shouldIContainPlayer(true);
+
+    this.player1 = new Player(sRow, sCol, arrowCount, 1);
+    this.player2 = new Player(sRow, sCol, arrowCount, 2);
+    this.players[0] = player1;
+    if (players == 2) {
+
+      this.players[1] = player2;
+      this.board[sRow][sCol].shouldIContainPlayer(true, 2);
+    }
+
+
+    this.board[sRow][sCol].shouldIContainPlayer(true, 1);
     this.seed = seed;
+    this.turn = 1;
 
 
   }
@@ -423,36 +486,63 @@ public class Maze implements IMaze {
 
   @Override
   public List<Direction> possiblePlayerMoves() {
-    Position playerPos = this.player1.getPosition();
+
+    Position playerPos = this.choosePlayer().getPosition();
     IReadableNode node = this.board[playerPos.getRow()][playerPos.getCol()];
     return node.getConnectedDirs();
+  }
+
+  private Player choosePlayer() {
+    return this.players[this.turn-1];
+  }
+
+  private void advanceTurn() {
+    if (this.isGameOver()) {
+      return;
+    }
+
+    if (this.turn < this.players.length) {
+      this.turn++;
+    } else {
+      this.turn = 1;
+    }
+    if (this.isGameOver(this.choosePlayer())) {
+      this.advanceTurn();
+    }
   }
 
 
   @Override
   public void movePlayer(Direction direction) {
 
-    if (this.isGameOver()) {
+    this.movePlayer(direction,this.choosePlayer());
+    this.advanceTurn();
+
+  }
+
+  private void movePlayer(Direction direction, Player player) {
+
+
+    if (this.isGameOver(player)) {
       throw new IllegalStateException("The game is over");
     }
 
     if (this.possiblePlayerMoves().contains(direction)) {
-      this.player1.clearEffects();
-      Position playerLoc = player1.getPosition();
-      this.board[playerLoc.getRow()][playerLoc.getCol()].shouldIContainPlayer(false);
-      this.player1.move(direction);
+      player.clearEffects();
+      Position playerLoc = player.getPosition();
+      this.board[playerLoc.getRow()][playerLoc.getCol()].shouldIContainPlayer(false, player.getPlayerNum());
+      player.move(direction);
 
-      playerLoc = handleWrap(player1.getPosition());
-      player1.setPosition(playerLoc.getRow(), playerLoc.getCol());
+      playerLoc = handleWrap(player.getPosition());
+      player.setPosition(playerLoc.getRow(), playerLoc.getCol());
       this.roomEffect(this.board[playerLoc.getRow()][playerLoc.getCol()], direction);
-      playerLoc = player1.getPosition();
-      this.board[playerLoc.getRow()][playerLoc.getCol()].shouldIContainPlayer(true);
+      playerLoc = player.getPosition();
+      this.board[playerLoc.getRow()][playerLoc.getCol()].shouldIContainPlayer(true, player.getPlayerNum());
 
 
     } else {
       throw new IllegalArgumentException("The player cannot move in that direction");
     }
-
   }
 
   /**
@@ -515,7 +605,7 @@ public class Maze implements IMaze {
    */
   private void roomEffect(IWritableNode node, Direction dir) {
     RoomType curRoom = node.getRoomType();
-    if (node.beenVisited() && node.getRoomType() != RoomType.HALLWAY) {
+    if (node.beenVisited() && node.getRoomType() != RoomType.HALLWAY && node.getRoomType() != RoomType.WUMPUS) {
       return;
     } else {
       node.visit();
@@ -525,26 +615,26 @@ public class Maze implements IMaze {
       case HALLWAY:
         List<Direction> dirs = new ArrayList<>(node.getConnectedDirs());
         dirs.remove(dir.opposite());
-        this.movePlayer(dirs.get(0));
+        this.movePlayer(dirs.get(0), this.choosePlayer());
         return;
       case WUMPUS:
-        this.player1.addEffect(PlayerEffect.RAN_INTO_WUMPUS);
+        this.choosePlayer().addEffect(PlayerEffect.RAN_INTO_WUMPUS);
         return;
       case PIT:
-        this.player1.addEffect(PlayerEffect.FELL_INTO_PIT);
+        this.choosePlayer().addEffect(PlayerEffect.FELL_INTO_PIT);
         return;
       case SUPERBAT:
         if (this.telePlayer()) {
-          this.player1.addEffect(PlayerEffect.GRABBED_BY_BAT);
+          this.choosePlayer().addEffect(PlayerEffect.GRABBED_BY_BAT);
         } else {
-          this.player1.addEffect(PlayerEffect.AVOIDED_BAT);
+          this.choosePlayer().addEffect(PlayerEffect.AVOIDED_BAT);
         }
         return;
       case SUPERBAT_AND_PIT:
         if (!this.telePlayer()) {
-          this.player1.addEffect(PlayerEffect.FELL_INTO_PIT);
+          this.choosePlayer().addEffect(PlayerEffect.FELL_INTO_PIT);
         } else {
-          this.player1.addEffect(PlayerEffect.GRABBED_BY_BAT);
+          this.choosePlayer().addEffect(PlayerEffect.GRABBED_BY_BAT);
         }
         break;
 
@@ -564,8 +654,8 @@ public class Maze implements IMaze {
    */
   private boolean telePlayer() {
     boolean foundLoc = false;
-    Random r = new Random(this.seed * this.player1.getPosition().getRow()
-            * this.player1.getPosition().getCol());
+    Random r = new Random(this.seed * this.choosePlayer().getPosition().getRow()
+            * this.choosePlayer().getPosition().getCol());
     int tele = r.nextInt(2);
 
     if (tele == 0) {
@@ -577,7 +667,7 @@ public class Maze implements IMaze {
       int colLoc = r.nextInt(this.board[0].length);
       if (!Arrays.asList(RoomType.SUPERBAT, RoomType.SUPERBAT_AND_PIT, RoomType.HALLWAY)
               .contains(this.board[rowLoc][colLoc].getRoomType())) {
-        this.player1.setPosition(rowLoc, colLoc);
+        this.choosePlayer().setPosition(rowLoc, colLoc);
         this.roomEffect(this.board[rowLoc][colLoc], null);
         foundLoc = true;
       }
@@ -587,7 +677,7 @@ public class Maze implements IMaze {
 
   @Override
   public Position getPlayerLocation() {
-    return this.player1.getPosition();
+    return this.choosePlayer().getPosition();
   }
 
   @Override
@@ -619,8 +709,15 @@ public class Maze implements IMaze {
 
   @Override
   public boolean isGameOver() {
+    boolean gameOver = true;
+    for (Player player : this.players) {
+      gameOver = gameOver && this.isGameOver(player);
+    }
+    return gameOver;
+  }
 
-    List<PlayerEffect> effects = this.player1.getRecentEffects();
+  private boolean isGameOver(Player player) {
+    List<PlayerEffect> effects = player.getRecentEffects();
     return effects.contains(PlayerEffect.NO_ARROWS) || effects.contains(PlayerEffect.SHOT_WUMPUS)
             || effects.contains(PlayerEffect.RAN_INTO_WUMPUS)
             || effects.contains(PlayerEffect.FELL_INTO_PIT);
@@ -628,15 +725,21 @@ public class Maze implements IMaze {
 
   @Override
   public List<PlayerEffect> getRecentEffects() {
-    return this.player1.getRecentEffects();
+    return this.choosePlayer().getRecentEffects();
   }
 
   @Override
   public void fireArrow(Direction dir, int distance) {
+    this.fireArrow(dir, distance, choosePlayer());
+    this.advanceTurn();
+
+  }
+
+  private void fireArrow(Direction dir, int distance, Player player) {
     if (this.isGameOver()) {
       throw new IllegalStateException("The game is over you cannot shoot");
     }
-    if (this.player1.getRecentEffects().contains(PlayerEffect.NO_ARROWS)) {
+    if (player.getRecentEffects().contains(PlayerEffect.NO_ARROWS)) {
       throw new IllegalStateException("Player is out of arrows");
     }
     if (distance < 1) {
@@ -645,27 +748,36 @@ public class Maze implements IMaze {
     if (dir == null) {
       throw new IllegalArgumentException("No null directions");
     }
-    this.player1.clearEffects();
-    this.player1.removeArrow();
-    if (fireArrowHelper(dir, distance, player1.getPosition())) {
-      this.player1.addEffect(PlayerEffect.SHOT_WUMPUS);
+    player.clearEffects();
+    player.removeArrow();
+    if (fireArrowHelper(dir, distance, player.getPosition())) {
+      player.addEffect(PlayerEffect.SHOT_WUMPUS);
     } else {
-      this.player1.addEffect(PlayerEffect.MISSED_WUMPUS);
-      if (this.player1.getArrowAmount() == 0) {
-        this.player1.addEffect(PlayerEffect.NO_ARROWS);
+      player.addEffect(PlayerEffect.MISSED_WUMPUS);
+      if (player.getArrowAmount() == 0) {
+        player.addEffect(PlayerEffect.NO_ARROWS);
       }
 
     }
+  }
+
+  @Override
+  public int getArrowAmount() {
+      return this.choosePlayer().getArrowAmount();
 
   }
 
   @Override
-  public int getArrowAmount(boolean player1) {
-    if (player1) {
-      return this.player1.getArrowAmount();
-    } else {
-      return this.player2.getArrowAmount();
-    }
+  public IMaze restart() {
+    return new Maze(restartParams[0], restartParams[1], restartParams[2],
+            restartParams[3] == 1, restartParams[4], restartParams[5], restartParams[6],
+            restartParams[7], restartParams[8], restartParams[9],
+            this.seed, restartParams[10], restartParams[11]);
+  }
+
+  @Override
+  public int playerNumTurn() {
+    return this.turn;
   }
 
   /**

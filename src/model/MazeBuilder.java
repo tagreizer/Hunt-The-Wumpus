@@ -20,6 +20,9 @@ public class MazeBuilder {
   private int pitsPercentage;
   private long seed;
   private int arrowCount;
+  private int playerCount;
+
+
 
 
   /**
@@ -91,11 +94,15 @@ public class MazeBuilder {
   }
 
   public void randomizeSCol() {
-    this.sCol = this.sRow = new Random().nextInt(this.cols);;
+    this.sCol =  new Random().nextInt(this.cols);;
   }
 
   public void randomizeGRow() {
-    boolean sameAsStart = true;
+    if (rows == 1) {
+      this.gRow = 0;
+      return;
+    }
+
     do {
       this.gRow = new Random().nextInt(this.rows);
     } while (this.gRow == sRow);
@@ -103,6 +110,10 @@ public class MazeBuilder {
   }
 
   public void randomizeGCol() {
+    if (cols == 1) {
+      this.gCol = 0;
+      return;
+    }
     do {
       this.gCol = new Random().nextInt(this.cols);
     } while (this.gCol == sCol);
@@ -136,6 +147,10 @@ public class MazeBuilder {
     this.arrowCount = arrowCount;
   }
 
+  public void setPlayerCount(int playerCount) {
+    this.playerCount = playerCount;
+  }
+
   /**
    * Builds the maze object based off of the mazebuilder's specifications.
    *
@@ -145,11 +160,11 @@ public class MazeBuilder {
     if (perfect) {
       return new Maze(this.rows, this.cols,
               this.isWrapping, this.sRow, this.sCol, this.gRow, this.gCol, batsPercentage,
-              pitsPercentage, this.seed, this.arrowCount);
+              pitsPercentage, this.seed, this.arrowCount,playerCount);
     } else {
       return new Maze(this.rows, this.cols, this.wallsRemaining,
               this.isWrapping, this.sRow, this.sCol, this.gRow, this.gCol, batsPercentage,
-              pitsPercentage, this.seed, this.arrowCount);
+              pitsPercentage, this.seed, this.arrowCount, this.playerCount);
     }
 
   }
