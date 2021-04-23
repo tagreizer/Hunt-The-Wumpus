@@ -120,15 +120,18 @@ public class Maze implements IMaze {
   /**
    * Generates a Maze using a given seed.
    *
-   * @param rows       the rows in the maze
-   * @param cols       the cols in the maze
-   * @param isWrapping whether or not the maze wraps.
-   * @param sRow       the starting point row
-   * @param sCol       the starting point col
-   * @param gRow       the goal row
-   * @param gCol       the goal col
-   * @param seed       the seed for the maze to build its edges from
-   * @param arrowCount the amount of arrows the player gets
+   * @param rows        the rows in the maze
+   * @param cols        the cols in the maze
+   * @param isWrapping  whether or not the maze wraps.
+   * @param sRow        the starting point row
+   * @param sCol        the starting point col
+   * @param gRow        the goal row
+   * @param gCol        the goal col
+   * @param seed        the seed for the maze to build its edges from
+   * @param arrowCount  the amount of arrows the player gets
+   * @param playerCount the amount of players
+   * @param percentBats the percentage of nodes with bats
+   * @param percentPits the percentage of nodes with pits
    */
   public Maze(int rows, int cols, boolean isWrapping,
               int sRow, int sCol, int gRow, int gCol,
@@ -138,6 +141,7 @@ public class Maze implements IMaze {
             isWrapping, sRow, sCol, gRow, gCol, percentBats, percentPits, seed, arrowCount, playerCount);
 
   }
+
   /**
    * Generates a Maze using a given seed.
    *
@@ -151,12 +155,14 @@ public class Maze implements IMaze {
    * @param gCol           the goal col
    * @param seed           the seed for the maze to build its edges from
    * @param arrowCount     the number of arrows the player gets
+   * @param percentBats    the percentage of nodes with bats
+   * @param percentPits    the percentage of nodes with pits
    */
   public Maze(int rows, int cols, int wallsRemaining, boolean isWrapping,
               int sRow, int sCol, int gRow, int gCol,
               int percentBats, int percentPits, long seed, int arrowCount) {
     this(rows, cols, wallsRemaining,
-            isWrapping, sRow, sCol, gRow, gCol, percentBats, percentPits, seed, arrowCount,1);
+            isWrapping, sRow, sCol, gRow, gCol, percentBats, percentPits, seed, arrowCount, 1);
 
   }
 
@@ -173,6 +179,9 @@ public class Maze implements IMaze {
    * @param gCol           the goal col
    * @param seed           the seed for the maze to build its edges from
    * @param arrowCount     the number of arrows the player gets
+   * @param players        the amount of players
+   * @param percentBats    the percentage of nodes with bats
+   * @param percentPits    the percentage of nodes with pits
    */
   public Maze(int rows, int cols, int wallsRemaining, boolean isWrapping,
               int sRow, int sCol, int gRow, int gCol,
@@ -492,10 +501,17 @@ public class Maze implements IMaze {
     return node.getConnectedDirs();
   }
 
+  /**
+   * Looks at the turn number and returns the player whos turn it is.
+   * @return the player whos turn it is.
+   */
   private Player choosePlayer() {
-    return this.players[this.turn-1];
+    return this.players[this.turn - 1];
   }
 
+  /**
+   * Advances the turn to the next player.
+   */
   private void advanceTurn() {
     if (this.isGameOver()) {
       return;
@@ -515,11 +531,18 @@ public class Maze implements IMaze {
   @Override
   public void movePlayer(Direction direction) {
 
-    this.movePlayer(direction,this.choosePlayer());
+    this.movePlayer(direction, this.choosePlayer());
     this.advanceTurn();
 
   }
 
+
+
+  /**
+   * Moves a specific player based off of the given direction.
+   * @param direction the direction to move.
+   * @param player the specific player
+   */
   private void movePlayer(Direction direction, Player player) {
 
 
@@ -543,6 +566,25 @@ public class Maze implements IMaze {
     } else {
       throw new IllegalArgumentException("The player cannot move in that direction");
     }
+  }
+
+  private Direction directionTo(Player player, Position position) {
+    Direction dir = null;
+    for (Direction direction : this.possiblePlayerMoves()) {
+      if (this.getConnectedNodeHelp(player.getPosition(), direction).getPosition() == position) {
+        dir = direction;
+      }
+    }
+
+    return dir;
+  }
+
+  @Override
+  public void movePlayer(Position position) {
+    Direction direction = this.directionTo(this.choosePlayer(), position);
+
+    this.movePlayer(direction);
+
   }
 
   /**
@@ -716,6 +758,11 @@ public class Maze implements IMaze {
     return gameOver;
   }
 
+  /**
+   * Checks if the game is over for the given player.
+   * @param player the player to check
+   * @return if the game is over for the current player.
+   */
   private boolean isGameOver(Player player) {
     List<PlayerEffect> effects = player.getRecentEffects();
     return effects.contains(PlayerEffect.NO_ARROWS) || effects.contains(PlayerEffect.SHOT_WUMPUS)
@@ -739,6 +786,12 @@ public class Maze implements IMaze {
 
   }
 
+  /**
+   * Fires an arrow in a specific direction, at a specific distance, for a specific player.
+   * @param dir the direction
+   * @param distance the distance
+   * @param player the player
+   */
   private void fireArrow(Direction dir, int distance, Player player) {
     if (this.isGameOver()) {
       throw new IllegalStateException("The game is over you cannot shoot");
@@ -767,7 +820,7 @@ public class Maze implements IMaze {
 
   @Override
   public int getArrowAmount() {
-      return this.choosePlayer().getArrowAmount();
+    return this.choosePlayer().getArrowAmount();
 
   }
 

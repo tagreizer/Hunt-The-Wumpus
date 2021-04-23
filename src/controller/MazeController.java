@@ -40,50 +40,53 @@ public class MazeController implements IMazeController, EventController {
     while (true) {
       if (creatingNewGame) {
 
-          if (this.model != null) {
-            this.view = new SwingMazeView();
-            this.view.setEventController(this);
-            this.creatingNewGame = false;
-          } else {
-            //This line is required, but functionally useless.
-            //For some reason the thread or whatever keeps this main loop running in java
-            //needs a line of code here (that needs to include something besides primitives) or
-            //it just shuts down when the other thread is created. I chose creating an empty string
-            //As i figured it wouldn't be taxing on the resources (I dont really know though).
-            //If you know why this bug is happening code you leave a comment and explain.
-            //I dont have time to troubleshoot it more, and assume maybe this function is being garbage collected
-            //or something, but I have no idea otherwise.
-            new String();
-          }
+        if (this.model != null) {
+          this.view = new SwingMazeView();
+          this.view.setEventController(this);
+          this.creatingNewGame = false;
+        } else {
+          //This line is required, but functionally useless.
+          //For some reason the thread or whatever keeps this main loop running in java
+          //needs a line of code here (that needs to include something besides primitives) or
+          //it just shuts down when the other thread is created. I chose creating an empty string
+          //As i figured it wouldn't be taxing on the resources (I dont really know though).
+          //If you know why this bug is happening could you leave a comment and explain.
+          //I dont have time to troubleshoot it more, and assume maybe this function is being garbage collected
+          //or something, but I have no idea otherwise.
+          new String();
+        }
 
 
-      } else{
-      //code that executes if not creating a new game.
-      if (modelChanged) {
+      } else {
+        //code that executes if not creating a new game.
+        if (modelChanged) {
 
-        this.updateView();
+          this.updateView();
 
-        this.modelChanged = false;
+          this.modelChanged = false;
 
-        //included to allow swing views to continue after the game ends,
-        // but allow text/other views to terminate if they want
-        if (this.model.isGameOver()) {
-          this.view.animateGameOver();
-          if (this.view.shouldQuit()) {
-            break;
+          //included to allow swing views to continue after the game ends,
+          // but allow text/other views to terminate if they want
+          if (this.model.isGameOver()) {
+            this.view.animateGameOver();
+            if (this.view.shouldQuit()) {
+              break;
+            }
           }
         }
+
+        this.view.animate();
+
+
       }
-
-      this.view.animate();
-
-
-    }
     }
 
 
   }
 
+  /**
+   * Updates the info in the view from the model.
+   */
   private void updateView() {
     this.view.setNodes(this.model.getNodes());
     this.view.setTurn(this.model.playerNumTurn());
@@ -120,19 +123,11 @@ public class MazeController implements IMazeController, EventController {
     }
   }
 
-  @Override
-  public void sendError(String error) {
-
-  }
 
   @Override
   public void restartGame() {
-    IMaze oldModel = this.model;
     this.model = this.model.restart();
     this.modelChanged = true;
-    if (oldModel.isGameOver()) {
-
-    }
 
 
   }
@@ -155,24 +150,36 @@ public class MazeController implements IMazeController, EventController {
 
   }
 
+  /**
+   * Assigns a new mode to this controller. (Only accessable to the newGameThreadClass)
+   *
+   * @param model the model to assign.
+   */
   private void assignModel(IMaze model) {
     this.model = model;
   }
 
+  /**
+   * A runnable to that creates an object to create a new maze with.
+   */
   private class newGameThreadClass implements Runnable {
-      IMaze model;
-      MazeController controller;
+    IMaze model;
+    MazeController controller;
 
-    newGameThreadClass(MazeController controller) {
+    /**
+     * Creates a newGameThreadClass and assigns the controller to give the model to.
+     * @param controller the controller to give the model to.
+     */
+    private newGameThreadClass(MazeController controller) {
       this.model = null;
       this.controller = controller;
     }
+
     @Override
     public void run() {
       this.model = new SwingMazeCreator(new MazeBuilder()).create();
 
       controller.assignModel(this.model);
-
 
 
     }

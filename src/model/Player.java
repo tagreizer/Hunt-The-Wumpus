@@ -18,7 +18,8 @@ class Player {
 
   /**
    * Creates a player at the specified location.
-   *  @param row        the row the player starts at.
+   *
+   * @param row        the row the player starts at.
    * @param col        the col the player starts at.
    * @param arrowCount the amount of arrows the player starts with.
    * @param playerNum
@@ -109,6 +110,10 @@ class Player {
     this.recentEffects.clear();
   }
 
+  /**
+   * Returns the players number.
+   * @return the players number.
+   */
   int getPlayerNum() {
     return this.playerNum;
   }

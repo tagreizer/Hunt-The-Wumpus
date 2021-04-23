@@ -25,10 +25,14 @@ public interface EventController {
    */
   void shootArrow(Direction dir, int distance);
 
-  void sendError(String error);
-
+  /**
+   * Signals that the event controller should restart the game.
+   */
   void restartGame();
 
+  /**
+   * Signals that the event controller should start a new game.
+   */
   void newGame();
 
 

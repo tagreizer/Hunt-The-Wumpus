@@ -25,6 +25,13 @@ public interface IMaze {
   void movePlayer(Direction direction);
 
   /**
+   * Moves a player to a position, as opposed to in a direction.
+   *
+   * @param position the position to move to.
+   */
+  void movePlayer(Position position);
+
+  /**
    * Returns a {@link Position} representing the players location.
    *
    * @return the players location as a position.
@@ -47,7 +54,7 @@ public interface IMaze {
   boolean isGameOver();
 
   /**
-   * Get the recent effects experienced by the player.
+   * Get the recent effects experienced by the players.
    *
    * @return the recent player effects
    */
@@ -63,10 +70,25 @@ public interface IMaze {
    */
   void fireArrow(Direction dir, int distance);
 
+  /**
+   * Returns the arrow amount for the current player.
+   *
+   * @return the amount of arrows the current player has.
+   */
   int getArrowAmount();
 
+  /**
+   * Returns a maze the is the exact same as this one but as a fresh maze.
+   *
+   * @return a new fresh maze that is the same as this one.
+   */
   IMaze restart();
 
+  /**
+   * Returns the number of the player whos current turn it is.
+   *
+   * @return the current players turn.
+   */
   int playerNumTurn();
 
 
