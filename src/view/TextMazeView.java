@@ -19,8 +19,11 @@ import model.RoomAttribute;
  * visualized by text as well.
  */
 public class TextMazeView implements IMazeView {
+
   private final Appendable output;
   private final Scanner scanner;
+  private int turn;
+  private int arrowCount;
   private boolean shouldIShowEffects;
   private EventController listener;
   private List<List<IReadableNode>> nodes;
@@ -43,7 +46,10 @@ public class TextMazeView implements IMazeView {
     this.output = output;
     this.scanner = new Scanner(input);
     this.shouldIShowEffects = true;
+    this.turn = 0;
+    this.arrowCount = 0;
   }
+
   @Override
   public void setEventController(EventController listener) {
     this.listener = listener;
@@ -81,7 +87,9 @@ public class TextMazeView implements IMazeView {
     }
 
     IReadableNode playerNode = this.nodes.get(playerPos.getRow()).get(playerPos.getCol());
-
+    builder.append("Player");
+    builder.append(this.turn);
+    builder.append("'s turn:\n");
     builder.append("You are in cave (");
     builder.append(playerPos.getRow());
     builder.append(",");
@@ -97,6 +105,9 @@ public class TextMazeView implements IMazeView {
     builder.delete(builder.length() - 2, builder.length());
 
     builder.append("\nShoot or Move (S-M)?:");
+    builder.append("\nYou have ");
+    builder.append(this.arrowCount);
+    builder.append(" arrows left.");
 
     this.outputString(builder.toString());
 
@@ -109,7 +120,7 @@ public class TextMazeView implements IMazeView {
   public void animateGameOver() {
 
     String finalString = this.playerEffectMsg() +
-            this.decideGameOverMsg();
+        this.decideGameOverMsg();
     this.outputString(finalString);
 
   }
@@ -121,26 +132,17 @@ public class TextMazeView implements IMazeView {
    */
   private String decideGameOverMsg() {
     StringBuilder builder = new StringBuilder();
-    for (int i = 0; i< this.effects.size(); i++) {
+    for (int i = 0; i < this.effects.size(); i++) {
       List<PlayerEffect> effectList = this.effects.get(i);
       builder.append("Player");
       builder.append(i + 1);
       builder.append("'s Outcome:\n");
-      for (PlayerEffect effect : effectList) {
-        switch (effect) {
-          case FELL_INTO_PIT:
-          case RAN_INTO_WUMPUS:
-          case NO_ARROWS:
-            builder.append("Game Over!\nBetter luck next time!");
-            break;
 
-          case SHOT_WUMPUS:
-            builder.append("You Win!\nCongratulations!");
-            break;
-          default:
-            //others do not have a game over msg.
+      if (effectList.contains(PlayerEffect.SHOT_WUMPUS)) {
+        builder.append("You Win!\nCongratulations!\n");
+      } else {
 
-        }
+        builder.append("Game Over!\nBetter luck next time!\n");
       }
     }
 
@@ -154,7 +156,7 @@ public class TextMazeView implements IMazeView {
    */
   private String playerEffectMsg() {
     StringBuilder builder = new StringBuilder();
-    for (int i = 0; i< this.effects.size(); i++) {
+    for (int i = 0; i < this.effects.size(); i++) {
       List<PlayerEffect> effectList = this.effects.get(i);
       builder.append("Player");
       builder.append(i + 1);
@@ -175,14 +177,14 @@ public class TextMazeView implements IMazeView {
             break;
           case SHOT_WUMPUS:
             builder.append("RAWRRRRRrrrr...\nYou hear the " +
-                    "screams of pain from a Wumpus pierced with an arrow!");
+                "screams of pain from a Wumpus pierced with an arrow!");
             break;
           case MISSED_WUMPUS:
             builder.append("Clank...\nYou hear your arrow echo off stone! You Missed!");
             break;
           case NO_ARROWS:
             builder.append("RAWRRRRRRRRR...\nYou're out of " +
-                    "arrows and the Wumpus knows!\nHe came to eat you!");
+                "arrows and the Wumpus knows!\nHe came to eat you!");
             break;
           default:
             //do nothing for other ones.
@@ -247,7 +249,6 @@ public class TextMazeView implements IMazeView {
     this.badDirectionDecided();
 
     while (scanner.hasNext()) {
-
 
       switch (scanner.next().toUpperCase()) {
         case "N":
@@ -358,14 +359,13 @@ public class TextMazeView implements IMazeView {
 
   @Override
   public void setArrowAmount(int arrowAmount) {
-
+    this.arrowCount = arrowAmount;
   }
 
   @Override
   public void setTurn(int playerNumber) {
-
+    this.turn = playerNumber;
   }
-
 
   /**
    * Takes a string and writes it to the output.
@@ -397,8 +397,5 @@ public class TextMazeView implements IMazeView {
     //does nothing for this type
   }
 
-  @Override
-  public void open() {
-    //does nothing for this type
-  }
+
 }

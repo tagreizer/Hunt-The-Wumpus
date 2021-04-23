@@ -58,8 +58,16 @@ public interface IMazeView {
    */
   void setPlayerEffects(List<List<PlayerEffect>> effects);
 
+  /**
+   * Sets the amount of remaining Arrows.
+   * @param arrowAmount the amount of remaining arrows.
+   */
   void setArrowAmount(int arrowAmount);
 
+  /**
+   * Sets the player turn.
+   * @param playerNumber the player who's turn it is.
+   */
   void setTurn(int playerNumber);
 
   /**
@@ -69,11 +77,17 @@ public interface IMazeView {
    */
   void displayError(String error);
 
+  /**
+   * Signals to a controller if this view type should quit after the end of a game. This allows
+   * some views to prompt for a restart while others exit on game completion.
+   * @return if the view should quit after the game is finished.
+   */
   boolean shouldQuit();
 
-  //Possibly get rid of. Dont know what to do.
+  /**
+   * Shuts down a view so that it stops animating.
+   */
   void close();
 
-  void open();
 
 }

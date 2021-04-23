@@ -51,7 +51,6 @@ final class ArrowPanel extends JPanel implements ActionListener {
     this.arrowDistance = 1;
     this.arrowDir = null;
 
-
     eastBut = new JButton("East ");
     eastBut.setActionCommand("East");
 
@@ -70,21 +69,19 @@ final class ArrowPanel extends JPanel implements ActionListener {
     JPanel distancePanel = new JPanel();
     distanceText = new JTextField();
     this.setUpTextBox(distancePanel, distanceText, "Arrow\nDistance",
-            new Dimension(105, 50), new Dimension(20, 20),
-            String.valueOf(this.arrowDistance));
+        new Dimension(105, 50), new Dimension(20, 20),
+        String.valueOf(this.arrowDistance));
 
     JPanel amountPanel = new JPanel();
     arrowAmountText = new JTextField();
     this.setUpTextBox(amountPanel, arrowAmountText, "Arrow\nAmount",
-            new Dimension(100, 50), new Dimension(20, 20),
-            String.valueOf(0));
-
+        new Dimension(100, 50), new Dimension(20, 20),
+        String.valueOf(0));
 
     increment = new BasicArrowButton(BasicArrowButton.NORTH);
     increment.setActionCommand("Larger Distance");
     decrement = new BasicArrowButton(BasicArrowButton.SOUTH);
     decrement.setActionCommand("Smaller Distance");
-
 
     distancePanel.add(increment);
     distancePanel.add(decrement);
@@ -97,7 +94,6 @@ final class ArrowPanel extends JPanel implements ActionListener {
     this.add(amountPanel);
     this.add(launchArrow);
 
-
     this.setActionListener(this);
 
 
@@ -105,15 +101,16 @@ final class ArrowPanel extends JPanel implements ActionListener {
 
   /**
    * Sets up text boxes.
-   * @param container the box container
-   * @param textField the text panel
-   * @param title the title of the box
+   *
+   * @param container     the box container
+   * @param textField     the text panel
+   * @param title         the title of the box
    * @param containerSize the size of the container
    * @param textFieldSize the text field size
-   * @param text the text inside
+   * @param text          the text inside
    */
   private void setUpTextBox(JPanel container, JTextField textField,
-                            String title, Dimension containerSize, Dimension textFieldSize, String text) {
+      String title, Dimension containerSize, Dimension textFieldSize, String text) {
     Border border = BorderFactory.createTitledBorder(title);
     container.setBorder(border);
     container.setPreferredSize(containerSize);
@@ -126,6 +123,7 @@ final class ArrowPanel extends JPanel implements ActionListener {
 
   /**
    * Sets the action listener for all the buttons.
+   *
    * @param listener the listener for the buttons.
    */
   private void setActionListener(ActionListener listener) {
@@ -141,6 +139,7 @@ final class ArrowPanel extends JPanel implements ActionListener {
 
   /**
    * Sets the eventcontroller for to notify for arrows fired.
+   *
    * @param listener the listener for the buttons.
    */
   void setEventListener(EventController listener) {
@@ -192,8 +191,14 @@ final class ArrowPanel extends JPanel implements ActionListener {
 
   }
 
+  /**
+   * Changes the direction buttons so that when one is pressed it is down and the others come up.
+   *
+   * @param oddButtonOut the button to go down.
+   */
   private void directionButtonManager(JButton oddButtonOut) {
-    List<JButton> directionButtons = new ArrayList<>(Arrays.asList(northBut, eastBut, westBut, southBut));
+    List<JButton> directionButtons = new ArrayList<>(
+        Arrays.asList(northBut, eastBut, westBut, southBut));
 
     directionButtons.remove(oddButtonOut);
     for (JButton button : directionButtons) {
@@ -203,6 +208,11 @@ final class ArrowPanel extends JPanel implements ActionListener {
 
   }
 
+  /**
+   * Sets the amount of arrows in the arrows left panel.
+   *
+   * @param arrowAmount
+   */
   void setArrowAmount(int arrowAmount) {
     this.arrowAmountText.setText(String.valueOf(arrowAmount));
   }

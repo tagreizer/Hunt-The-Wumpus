@@ -100,6 +100,9 @@ class ReadableNode implements IReadableNode {
     if (this.attributes.contains(RoomAttribute.HAS_PLAYER1)) {
       return "P";
     }
+    if (this.attributes.contains(RoomAttribute.HAS_PLAYER2)) {
+      return "2";
+    }
     switch (this.roomType) {
       case WUMPUS:
         return "G";

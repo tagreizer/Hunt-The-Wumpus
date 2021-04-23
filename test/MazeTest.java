@@ -1,6 +1,5 @@
 
 
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,6 +24,7 @@ import static org.junit.Assert.fail;
  * Tests the maze objects.
  */
 public class MazeTest {
+
   IMaze smallPerfectNW;
 
   private int countEdges(IMaze maze) {
@@ -98,22 +98,22 @@ public class MazeTest {
 
     try {
       assertEquals("P 0 \n" +
-              "|   \n" +
-              "+-G \n" +
-              "  | \n", m.toString());
+          "|   \n" +
+          "+-G \n" +
+          "  | \n", m.toString());
       assertEquals(3, this.countEdges(m));
       assertEquals("P-0 \n" +
-              "|   \n" +
-              "+-G \n" +
-              "    \n", m2.toString());
+          "|   \n" +
+          "+-G \n" +
+          "    \n", m2.toString());
       assertEquals(3, this.countEdges(m2));
 
       assertEquals("P-+-+ 0 \n" +
-              "|   | | \n" +
-              "+ +-0-+ \n" +
-              "| |     \n" +
-              "0 +-+-G \n" +
-              "        \n", smallPerfectNW.toString());
+          "|   | | \n" +
+          "+ +-0-+ \n" +
+          "| |     \n" +
+          "0 +-+-G \n" +
+          "        \n", smallPerfectNW.toString());
       assertEquals(11, this.countEdges(smallPerfectNW));
     } catch (Exception e) {
       fail(e.getMessage());
@@ -126,15 +126,15 @@ public class MazeTest {
   public void testNonWrappedNonPerfectMaze() {
     IMaze m = new Maze(5, 5, 14, false, 0, 0, 2, 2, 12345);
     assertEquals("P-0 0 0-+ \n" +
-            "|   |   | \n" +
-            "+-+-0-0-0 \n" +
-            "    | | | \n" +
-            "+-0-G-0 0 \n" +
-            "| |   |   \n" +
-            "+ +-+ 0-+ \n" +
-            "|   | | | \n" +
-            "+-0 +-+ 0 \n" +
-            "          \n", m.toString());
+        "|   |   | \n" +
+        "+-+-0-0-0 \n" +
+        "    | | | \n" +
+        "+-0-G-0 0 \n" +
+        "| |   |   \n" +
+        "+ +-+ 0-+ \n" +
+        "|   | | | \n" +
+        "+-0 +-+ 0 \n" +
+        "          \n", m.toString());
     assertEquals(26, this.countEdges(m));
   }
 
@@ -142,11 +142,11 @@ public class MazeTest {
   public void testWrappedNonPerfectMaze() {
     IMaze m = new Maze(3, 3, 0, true, 0, 0, 2, 2, 9874353);
     assertEquals("P-0-0-\n" +
-            "| | | \n" +
-            "0-0-0-\n" +
-            "| | | \n" +
-            "0-0-G-\n" +
-            "| | | \n", m.toString());
+        "| | | \n" +
+        "0-0-0-\n" +
+        "| | | \n" +
+        "0-0-G-\n" +
+        "| | | \n", m.toString());
     assertEquals(18, this.countEdges(m));
   }
 
@@ -156,34 +156,34 @@ public class MazeTest {
     //Visits every node
     //Reaches the goal
     assertEquals("P-+-+ 0 \n" +
-            "|   | | \n" +
-            "+ +-0-+ \n" +
-            "| |     \n" +
-            "0 +-+-G \n" +
-            "        \n", smallPerfectNW.toString());
+        "|   | | \n" +
+        "+ +-0-+ \n" +
+        "| |     \n" +
+        "0 +-+-G \n" +
+        "        \n", smallPerfectNW.toString());
     assertTrue(smallPerfectNW.possiblePlayerMoves().contains(Direction.EAST));
     assertEquals(2, smallPerfectNW.possiblePlayerMoves().size());
 
     smallPerfectNW.movePlayer(Direction.EAST);
 
     assertEquals("S-+-+ 0 \n" +
-            "|   | | \n" +
-            "+ +-P-+ \n" +
-            "| |     \n" +
-            "0 +-+-G \n" +
-            "        \n", smallPerfectNW.toString());
+        "|   | | \n" +
+        "+ +-P-+ \n" +
+        "| |     \n" +
+        "0 +-+-G \n" +
+        "        \n", smallPerfectNW.toString());
     assertTrue(smallPerfectNW.possiblePlayerMoves()
-            .containsAll(Arrays.asList(Direction.EAST, Direction.WEST, Direction.NORTH)));
+        .containsAll(Arrays.asList(Direction.EAST, Direction.WEST, Direction.NORTH)));
     assertEquals(3, smallPerfectNW.possiblePlayerMoves().size());
 
     smallPerfectNW.movePlayer(Direction.WEST);
 
     assertEquals("S-+-+ 0 \n" +
-            "|   | | \n" +
-            "+ +-0-+ \n" +
-            "| |     \n" +
-            "0 +-+-P \n" +
-            "        \n", smallPerfectNW.toString());
+        "|   | | \n" +
+        "+ +-0-+ \n" +
+        "| |     \n" +
+        "0 +-+-P \n" +
+        "        \n", smallPerfectNW.toString());
 
     assertTrue(smallPerfectNW.isGameOver());
 
@@ -222,48 +222,104 @@ public class MazeTest {
     IMaze m = new Maze(2, 2, 0, true, 0, 0, 1, 1, 101010);
 
     assertEquals("P-0-\n" +
-            "| | \n" +
-            "0-G-\n" +
-            "| | \n", m.toString());
+        "| | \n" +
+        "0-G-\n" +
+        "| | \n", m.toString());
 
     assertTrue(m.possiblePlayerMoves()
-            .containsAll(Arrays.asList(Direction.NORTH, Direction.SOUTH,
-                    Direction.WEST, Direction.EAST)));
+        .containsAll(Arrays.asList(Direction.NORTH, Direction.SOUTH,
+            Direction.WEST, Direction.EAST)));
     m.movePlayer(Direction.NORTH);
     assertEquals("S-0-\n" +
-            "| | \n" +
-            "P-G-\n" +
-            "| | \n", m.toString());
+        "| | \n" +
+        "P-G-\n" +
+        "| | \n", m.toString());
     m.movePlayer(Direction.NORTH);
     assertEquals("P-0-\n" +
-            "| | \n" +
-            "0-G-\n" +
-            "| | \n", m.toString());
+        "| | \n" +
+        "0-G-\n" +
+        "| | \n", m.toString());
     m.movePlayer(Direction.EAST);
     assertEquals("S-P-\n" +
-            "| | \n" +
-            "0-G-\n" +
-            "| | \n", m.toString());
+        "| | \n" +
+        "0-G-\n" +
+        "| | \n", m.toString());
     m.movePlayer(Direction.EAST);
     assertEquals("P-0-\n" +
-            "| | \n" +
-            "0-G-\n" +
-            "| | \n", m.toString());
+        "| | \n" +
+        "0-G-\n" +
+        "| | \n", m.toString());
     assertFalse(m.isGameOver());
     m.movePlayer(Direction.WEST);
     assertEquals("S-P-\n" +
-            "| | \n" +
-            "0-G-\n" +
-            "| | \n", m.toString());
+        "| | \n" +
+        "0-G-\n" +
+        "| | \n", m.toString());
     assertFalse(m.isGameOver());
     m.movePlayer(Direction.NORTH);
     assertEquals("S-0-\n" +
-            "| | \n" +
-            "0-P-\n" +
-            "| | \n", m.toString());
+        "| | \n" +
+        "0-P-\n" +
+        "| | \n", m.toString());
     assertTrue(m.isGameOver());
     try {
       m.movePlayer(Direction.NORTH);
+      fail("Shouldnt be able to move");
+
+    } catch (IllegalStateException e) {
+      assertEquals("The game is over", e.getMessage());
+    }
+    List<List<IReadableNode>> nodes = m.getNodes();
+    assertTrue(nodes.get(1).get(1).beenVisited());
+  }
+
+  @Test
+  public void wrappedMazeTraverseMoveByPos() {
+    IMaze m = new Maze(2, 2, 0, true, 0, 0, 1, 1, 101010);
+
+    assertEquals("P-0-\n" +
+        "| | \n" +
+        "0-G-\n" +
+        "| | \n", m.toString());
+
+    assertTrue(m.possiblePlayerMoves()
+        .containsAll(Arrays.asList(Direction.NORTH, Direction.SOUTH,
+            Direction.WEST, Direction.EAST)));
+    m.movePlayer(new Position(1, 0));
+    assertEquals("S-0-\n" +
+        "| | \n" +
+        "P-G-\n" +
+        "| | \n", m.toString());
+    m.movePlayer(new Position(0, 0));
+    assertEquals("P-0-\n" +
+        "| | \n" +
+        "0-G-\n" +
+        "| | \n", m.toString());
+    m.movePlayer(new Position(0, 1));
+    assertEquals("S-P-\n" +
+        "| | \n" +
+        "0-G-\n" +
+        "| | \n", m.toString());
+    m.movePlayer(new Position(0, 0));
+    assertEquals("P-0-\n" +
+        "| | \n" +
+        "0-G-\n" +
+        "| | \n", m.toString());
+    assertFalse(m.isGameOver());
+    m.movePlayer(new Position(0, 1));
+    assertEquals("S-P-\n" +
+        "| | \n" +
+        "0-G-\n" +
+        "| | \n", m.toString());
+    assertFalse(m.isGameOver());
+    m.movePlayer(new Position(1, 1));
+    assertEquals("S-0-\n" +
+        "| | \n" +
+        "0-P-\n" +
+        "| | \n", m.toString());
+    assertTrue(m.isGameOver());
+    try {
+      m.movePlayer(new Position(1, 0));
       fail("Shouldnt be able to move");
 
     } catch (IllegalStateException e) {
@@ -278,49 +334,48 @@ public class MazeTest {
     IMaze m = new Maze(10, 10, 90, true, 0, 0, 9, 9, 20, 10, 982, 2);
 
     assertEquals("P-0-0-B-0 B +-+-0-0-\n" +
-            "| | | |         | | \n" +
-            "B 0 #-0-+ U +-+-0-0 \n" +
-            "    | | | | |     | \n" +
-            "+-+-+ B-U-U-0-0 +-0-\n" +
-            "      |   |     |   \n" +
-            "B U-0-0-+-B-0-0 B +-\n" +
-            "    |     | |     | \n" +
-            "+-+ +-B 0-U-B +-+ +-\n" +
-            "  |         | | |   \n" +
-            "B +-#-0-0 +-0-0-B-0-\n" +
-            "    | |   | |     | \n" +
-            "#-+-B +-+-0-+ +-+-+ \n" +
-            "    |         |     \n" +
-            "+-+ U +-+ +-B-0-+ B-\n" +
-            "  |   | | | | | |   \n" +
-            "+-+ +-+ 0-B-+ + B +-\n" +
-            "    |   |     |   | \n" +
-            "U-+ +-0 +-+ B +-0-G \n" +
-            "  |       | |   |   \n", m.toString());
+        "| | | |         | | \n" +
+        "B 0 #-0-+ U +-+-0-0 \n" +
+        "    | | | | |     | \n" +
+        "+-+-+ B-U-U-0-0 +-0-\n" +
+        "      |   |     |   \n" +
+        "B U-0-0-+-B-0-0 B +-\n" +
+        "    |     | |     | \n" +
+        "+-+ +-B 0-U-B +-+ +-\n" +
+        "  |         | | |   \n" +
+        "B +-#-0-0 +-0-0-B-0-\n" +
+        "    | |   | |     | \n" +
+        "#-+-B +-+-0-+ +-+-+ \n" +
+        "    |         |     \n" +
+        "+-+ U +-+ +-B-0-+ B-\n" +
+        "  |   | | | | | |   \n" +
+        "+-+ +-+ 0-B-+ + B +-\n" +
+        "    |   |     |   | \n" +
+        "U-+ +-0 +-+ B +-0-G \n" +
+        "  |       | |   |   \n", m.toString());
 
     m.movePlayer(Direction.SOUTH);
 
     assertEquals("S-0-0-B-0 B +-+-0-0-\n" +
-            "| | | |         | | \n" +
-            "B 0 #-0-+ U +-+-0-0 \n" +
-            "    | | | | |     | \n" +
-            "+-+-+ B-U-U-0-0 +-0-\n" +
-            "      |   |     |   \n" +
-            "B P-0-0-+-B-0-0 B +-\n" +
-            "    |     | |     | \n" +
-            "+-+ +-B 0-U-B +-+ +-\n" +
-            "  |         | | |   \n" +
-            "B +-#-0-0 +-0-0-B-0-\n" +
-            "    | |   | |     | \n" +
-            "#-+-B +-+-0-+ +-+-+ \n" +
-            "    |         |     \n" +
-            "+-+ U +-+ +-B-0-+ B-\n" +
-            "  |   | | | | | |   \n" +
-            "+-+ +-+ 0-B-+ + B +-\n" +
-            "    |   |     |   | \n" +
-            "U-+ +-0 +-+ B +-0-G \n" +
-            "  |       | |   |   \n", m.toString());
-
+        "| | | |         | | \n" +
+        "B 0 #-0-+ U +-+-0-0 \n" +
+        "    | | | | |     | \n" +
+        "+-+-+ B-U-U-0-0 +-0-\n" +
+        "      |   |     |   \n" +
+        "B P-0-0-+-B-0-0 B +-\n" +
+        "    |     | |     | \n" +
+        "+-+ +-B 0-U-B +-+ +-\n" +
+        "  |         | | |   \n" +
+        "B +-#-0-0 +-0-0-B-0-\n" +
+        "    | |   | |     | \n" +
+        "#-+-B +-+-0-+ +-+-+ \n" +
+        "    |         |     \n" +
+        "+-+ U +-+ +-B-0-+ B-\n" +
+        "  |   | | | | | |   \n" +
+        "+-+ +-+ 0-B-+ + B +-\n" +
+        "    |   |     |   | \n" +
+        "U-+ +-0 +-+ B +-0-G \n" +
+        "  |       | |   |   \n", m.toString());
 
     assertTrue(m.isGameOver());
 
@@ -330,96 +385,96 @@ public class MazeTest {
   public void batTesting2() {
     IMaze m = new Maze(6, 6, 20, true, 0, 0, 5, 5, 30, 0, 982, 2);
     assertEquals("P-+ 0-0 0 + \n" +
-            "| | | | | | \n" +
-            "0-0-B-B B-B-\n" +
-            "  | | | | | \n" +
-            "B 0-0 0-B B \n" +
-            "| | | | |   \n" +
-            "0-B-B-0-0-B-\n" +
-            "  |   |   | \n" +
-            "+-0-0-B-+ + \n" +
-            "| | |   | | \n" +
-            "B-0-0-+ +-G-\n" +
-            "|   | |   | \n", m.toString());
+        "| | | | | | \n" +
+        "0-0-B-B B-B-\n" +
+        "  | | | | | \n" +
+        "B 0-0 0-B B \n" +
+        "| | | | |   \n" +
+        "0-B-B-0-0-B-\n" +
+        "  |   |   | \n" +
+        "+-0-0-B-+ + \n" +
+        "| | |   | | \n" +
+        "B-0-0-+ +-G-\n" +
+        "|   | |   | \n", m.toString());
     m.movePlayer(Direction.EAST);
     assertEquals("S-+ 0-0 0 + \n" +
-            "| | | | | | \n" +
-            "0-P-B-B B-B-\n" +
-            "  | | | | | \n" +
-            "B 0-0 0-B B \n" +
-            "| | | | |   \n" +
-            "0-B-B-0-0-B-\n" +
-            "  |   |   | \n" +
-            "+-0-0-B-+ + \n" +
-            "| | |   | | \n" +
-            "B-0-0-+ +-G-\n" +
-            "|   | |   | \n", m.toString());
+        "| | | | | | \n" +
+        "0-P-B-B B-B-\n" +
+        "  | | | | | \n" +
+        "B 0-0 0-B B \n" +
+        "| | | | |   \n" +
+        "0-B-B-0-0-B-\n" +
+        "  |   |   | \n" +
+        "+-0-0-B-+ + \n" +
+        "| | |   | | \n" +
+        "B-0-0-+ +-G-\n" +
+        "|   | |   | \n", m.toString());
     m.movePlayer(Direction.NORTH);
     assertEquals("P-+ 0-0 0 + \n" +
-            "| | | | | | \n" +
-            "0-0-B-B B-B-\n" +
-            "  | | | | | \n" +
-            "B 0-0 0-B B \n" +
-            "| | | | |   \n" +
-            "0-B-B-0-0-B-\n" +
-            "  |   |   | \n" +
-            "+-0-0-B-+ + \n" +
-            "| | |   | | \n" +
-            "B-0-0-+ +-G-\n" +
-            "|   | |   | \n", m.toString());
+        "| | | | | | \n" +
+        "0-0-B-B B-B-\n" +
+        "  | | | | | \n" +
+        "B 0-0 0-B B \n" +
+        "| | | | |   \n" +
+        "0-B-B-0-0-B-\n" +
+        "  |   |   | \n" +
+        "+-0-0-B-+ + \n" +
+        "| | |   | | \n" +
+        "B-0-0-+ +-G-\n" +
+        "|   | |   | \n", m.toString());
     m.movePlayer(Direction.EAST);
     m.movePlayer(Direction.EAST);
     assertEquals("S-+ 0-0 0 + \n" +
-            "| | | | | | \n" +
-            "0-0-B-B B-B-\n" +
-            "  | | | | | \n" +
-            "B 0-0 0-B B \n" +
-            "| | | | |   \n" +
-            "P-B-B-0-0-B-\n" +
-            "  |   |   | \n" +
-            "+-0-0-B-+ + \n" +
-            "| | |   | | \n" +
-            "B-0-0-+ +-G-\n" +
-            "|   | |   | \n", m.toString());
+        "| | | | | | \n" +
+        "0-0-B-B B-B-\n" +
+        "  | | | | | \n" +
+        "B 0-0 0-B B \n" +
+        "| | | | |   \n" +
+        "P-B-B-0-0-B-\n" +
+        "  |   |   | \n" +
+        "+-0-0-B-+ + \n" +
+        "| | |   | | \n" +
+        "B-0-0-+ +-G-\n" +
+        "|   | |   | \n", m.toString());
     m.movePlayer(Direction.EAST);
     assertEquals("S-+ 0-0 0 + \n" +
-            "| | | | | | \n" +
-            "0-0-B-B B-B-\n" +
-            "  | | | | | \n" +
-            "B P-0 0-B B \n" +
-            "| | | | |   \n" +
-            "0-B-B-0-0-B-\n" +
-            "  |   |   | \n" +
-            "+-0-0-B-+ + \n" +
-            "| | |   | | \n" +
-            "B-0-0-+ +-G-\n" +
-            "|   | |   | \n", m.toString());
+        "| | | | | | \n" +
+        "0-0-B-B B-B-\n" +
+        "  | | | | | \n" +
+        "B P-0 0-B B \n" +
+        "| | | | |   \n" +
+        "0-B-B-0-0-B-\n" +
+        "  |   |   | \n" +
+        "+-0-0-B-+ + \n" +
+        "| | |   | | \n" +
+        "B-0-0-+ +-G-\n" +
+        "|   | |   | \n", m.toString());
     m.movePlayer(Direction.SOUTH);
     assertEquals("S-+ 0-0 0 + \n" +
-            "| | | | | | \n" +
-            "0-0-B-B B-B-\n" +
-            "  | | | | | \n" +
-            "B 0-0 0-B B \n" +
-            "| | | | |   \n" +
-            "0-P-B-0-0-B-\n" +
-            "  |   |   | \n" +
-            "+-0-0-B-+ + \n" +
-            "| | |   | | \n" +
-            "B-0-0-+ +-G-\n" +
-            "|   | |   | \n", m.toString());
+        "| | | | | | \n" +
+        "0-0-B-B B-B-\n" +
+        "  | | | | | \n" +
+        "B 0-0 0-B B \n" +
+        "| | | | |   \n" +
+        "0-P-B-0-0-B-\n" +
+        "  |   |   | \n" +
+        "+-0-0-B-+ + \n" +
+        "| | |   | | \n" +
+        "B-0-0-+ +-G-\n" +
+        "|   | |   | \n", m.toString());
     m.movePlayer(Direction.EAST);
     assertEquals("S-+ 0-0 0 + \n" +
-            "| | | | | | \n" +
-            "0-0-B-B B-B-\n" +
-            "  | | | | | \n" +
-            "B 0-0 0-B B \n" +
-            "| | | | |   \n" +
-            "0-B-B-0-0-B-\n" +
-            "  |   |   | \n" +
-            "+-0-0-B-+ + \n" +
-            "| | |   | | \n" +
-            "B-0-0-+ +-P-\n" +
-            "|   | |   | \n", m.toString());
+        "| | | | | | \n" +
+        "0-0-B-B B-B-\n" +
+        "  | | | | | \n" +
+        "B 0-0 0-B B \n" +
+        "| | | | |   \n" +
+        "0-B-B-0-0-B-\n" +
+        "  |   |   | \n" +
+        "+-0-0-B-+ + \n" +
+        "| | |   | | \n" +
+        "B-0-0-+ +-P-\n" +
+        "|   | |   | \n", m.toString());
     assertTrue(m.isGameOver());
 
   }
@@ -428,38 +483,38 @@ public class MazeTest {
   public void testBats() {
     IMaze m = new Maze(8, 8, 0, true, 5, 5, 0, 0, 40, 0, 320943, 2);
     assertEquals("G-B-B-B-0-0-B-B-\n" +
-            "| | | | | | | | \n" +
-            "B-0-B-B-0-B-B-B-\n" +
-            "| | | | | | | | \n" +
-            "B-0-0-0-B-0-B-0-\n" +
-            "| | | | | | | | \n" +
-            "0-0-B-0-B-B-0-0-\n" +
-            "| | | | | | | | \n" +
-            "0-0-B-0-B-0-0-B-\n" +
-            "| | | | | | | | \n" +
-            "B-B-0-0-B-P-0-0-\n" +
-            "| | | | | | | | \n" +
-            "B-0-B-0-B-B-0-B-\n" +
-            "| | | | | | | | \n" +
-            "B-0-0-0-B-B-B-0-\n" +
-            "| | | | | | | | \n", m.toString());
+        "| | | | | | | | \n" +
+        "B-0-B-B-0-B-B-B-\n" +
+        "| | | | | | | | \n" +
+        "B-0-0-0-B-0-B-0-\n" +
+        "| | | | | | | | \n" +
+        "0-0-B-0-B-B-0-0-\n" +
+        "| | | | | | | | \n" +
+        "0-0-B-0-B-0-0-B-\n" +
+        "| | | | | | | | \n" +
+        "B-B-0-0-B-P-0-0-\n" +
+        "| | | | | | | | \n" +
+        "B-0-B-0-B-B-0-B-\n" +
+        "| | | | | | | | \n" +
+        "B-0-0-0-B-B-B-0-\n" +
+        "| | | | | | | | \n", m.toString());
     m.movePlayer(Direction.WEST);
     assertEquals("G-B-B-B-0-0-B-B-\n" +
-            "| | | | | | | | \n" +
-            "B-0-B-B-0-B-B-B-\n" +
-            "| | | | | | | | \n" +
-            "B-0-0-0-B-0-B-0-\n" +
-            "| | | | | | | | \n" +
-            "0-0-B-0-B-B-0-0-\n" +
-            "| | | | | | | | \n" +
-            "0-0-B-0-B-0-0-B-\n" +
-            "| | | | | | | | \n" +
-            "B-B-0-0-P-S-0-0-\n" +
-            "| | | | | | | | \n" +
-            "B-0-B-0-B-B-0-B-\n" +
-            "| | | | | | | | \n" +
-            "B-0-0-0-B-B-B-0-\n" +
-            "| | | | | | | | \n", m.toString());
+        "| | | | | | | | \n" +
+        "B-0-B-B-0-B-B-B-\n" +
+        "| | | | | | | | \n" +
+        "B-0-0-0-B-0-B-0-\n" +
+        "| | | | | | | | \n" +
+        "0-0-B-0-B-B-0-0-\n" +
+        "| | | | | | | | \n" +
+        "0-0-B-0-B-0-0-B-\n" +
+        "| | | | | | | | \n" +
+        "B-B-0-0-P-S-0-0-\n" +
+        "| | | | | | | | \n" +
+        "B-0-B-0-B-B-0-B-\n" +
+        "| | | | | | | | \n" +
+        "B-0-0-0-B-B-B-0-\n" +
+        "| | | | | | | | \n", m.toString());
 
   }
 
@@ -469,21 +524,21 @@ public class MazeTest {
     IMaze m = new Maze(8, 8, true, 0, 0, 7, 7, 10, 10, 325, 2);
 
     assertEquals("P +-0 # + 0 +-+ \n" +
-            "      | | | |   \n" +
-            "+-+-0 0-0-B + +-\n" +
-            "      |   | | | \n" +
-            "0 +-0 0 +-+ +-0-\n" +
-            "  |     |       \n" +
-            "0-#-+-+ 0-U-+-+-\n" +
-            "|     | | |     \n" +
-            "0-0 0 U + 0 0-+-\n" +
-            "|   |   |       \n" +
-            "B 0-0 +-0 U-+-+ \n" +
-            "    | | |     | \n" +
-            "+-0 +-+ 0 0 +-0 \n" +
-            "|         | | | \n" +
-            "0-B-+-0 +-#-+ G-\n" +
-            "| |     |     | \n", m.toString());
+        "      | | | |   \n" +
+        "+-+-0 0-0-B + +-\n" +
+        "      |   | | | \n" +
+        "0 +-0 0 +-+ +-0-\n" +
+        "  |     |       \n" +
+        "0-#-+-+ 0-U-+-+-\n" +
+        "|     | | |     \n" +
+        "0-0 0 U + 0 0-+-\n" +
+        "|   |   |       \n" +
+        "B 0-0 +-0 U-+-+ \n" +
+        "    | | |     | \n" +
+        "+-0 +-+ 0 0 +-0 \n" +
+        "|         | | | \n" +
+        "0-B-+-0 +-#-+ G-\n" +
+        "| |     |     | \n", m.toString());
 
   }
 
@@ -493,15 +548,15 @@ public class MazeTest {
     IMaze m = new Maze(5, 5, true, 0, 0, 4, 4, 5, 20, 325, 2);
 
     assertEquals("P-0 U + + \n" +
-            "|     | | \n" +
-            "+-U-0 +-+ \n" +
-            "  |       \n" +
-            "+-B-0 0 +-\n" +
-            "  |   | | \n" +
-            "+ U +-0-0-\n" +
-            "|   |     \n" +
-            "U-U + 0 G-\n" +
-            "    | | | \n", m.toString());
+        "|     | | \n" +
+        "+-U-0 +-+ \n" +
+        "  |       \n" +
+        "+-B-0 0 +-\n" +
+        "  |   | | \n" +
+        "+ U +-0-0-\n" +
+        "|   |     \n" +
+        "U-U + 0 G-\n" +
+        "    | | | \n", m.toString());
 
   }
 
@@ -569,6 +624,75 @@ public class MazeTest {
     m.fireArrow(Direction.NORTH, 3);
     m.fireArrow(Direction.NORTH, 3);
     m.fireArrow(Direction.NORTH, 3);
+
+  }
+
+  @Test
+  public void sampleGameRunThroughPerfectMaze2Player() {
+    //Visits every node
+    //Reaches the goal
+    smallPerfectNW = new Maze(3, 4, false, 0, 0, 2, 3, 0, 0, 234, 2, 2);
+    assertEquals("P-+-+ 0 \n" +
+        "|   | | \n" +
+        "+ +-0-+ \n" +
+        "| |     \n" +
+        "0 +-+-G \n" +
+        "        \n", smallPerfectNW.toString());
+    assertEquals(1,smallPerfectNW.playerNumTurn());
+    assertTrue(smallPerfectNW.possiblePlayerMoves().contains(Direction.EAST));
+    assertEquals(2, smallPerfectNW.possiblePlayerMoves().size());
+
+    smallPerfectNW.movePlayer(Direction.EAST);
+    assertEquals(2,smallPerfectNW.playerNumTurn());
+
+    assertEquals("2-+-+ 0 \n"
+        + "|   | | \n"
+        + "+ +-P-+ \n"
+        + "| |     \n"
+        + "0 +-+-G \n"
+        + "        \n", smallPerfectNW.toString());
+
+    assertTrue(smallPerfectNW.possiblePlayerMoves().contains(Direction.SOUTH));
+    assertEquals(2, smallPerfectNW.possiblePlayerMoves().size());
+
+    smallPerfectNW.movePlayer(Direction.SOUTH);
+    assertEquals(1,smallPerfectNW.playerNumTurn());
+
+    assertEquals("S-+-+ 0 \n"
+        + "|   | | \n"
+        + "+ +-P-+ \n"
+        + "| |     \n"
+        + "2 +-+-G \n"
+        + "        \n", smallPerfectNW.toString());
+
+    smallPerfectNW.movePlayer(Direction.WEST);
+    assertEquals(2,smallPerfectNW.playerNumTurn());
+    //player 1 has lost so all turns are player two now.
+    assertFalse(smallPerfectNW.isGameOver());
+    smallPerfectNW.movePlayer(new Position(0,0));
+
+    assertEquals("2-+-+ 0 \n"
+        + "|   | | \n"
+        + "+ +-0-+ \n"
+        + "| |     \n"
+        + "0 +-+-P \n"
+        + "        \n", smallPerfectNW.toString());
+
+    assertEquals(2, smallPerfectNW.playerNumTurn());
+    smallPerfectNW.movePlayer(Direction.EAST);
+
+    assertEquals("S-+-+ 0 \n"
+        + "|   | | \n"
+        + "+ +-2-+ \n"
+        + "| |     \n"
+        + "0 +-+-P \n"
+        + "        \n", smallPerfectNW.toString());
+
+    assertEquals(2, smallPerfectNW.playerNumTurn());
+    smallPerfectNW.fireArrow(Direction.WEST, 1);
+
+
+    assertTrue(smallPerfectNW.isGameOver());
 
   }
 

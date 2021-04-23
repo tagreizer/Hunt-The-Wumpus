@@ -1,6 +1,8 @@
 package controller;
 
 import model.Direction;
+import model.Position;
+import view.ViewStyle;
 
 
 /**
@@ -15,6 +17,12 @@ public interface EventController {
    * @param direction the direction a player should move in.
    */
   void movePlayer(Direction direction);
+
+  /**
+   * Tells the event controller to try and move a player to a specific position.
+   * @param position the position to move to.
+   */
+  void movePlayer(Position position);
 
   /**
    * Tells the event controller that the player should shoot an arrow in a direction with a specific
@@ -32,9 +40,10 @@ public interface EventController {
 
   /**
    * Signals that the event controller should start a new game.
+   *
+   * @param style the type of view used to display after starting.
    */
-  void newGame();
-
+  void newGame(ViewStyle style);
 
 
 }

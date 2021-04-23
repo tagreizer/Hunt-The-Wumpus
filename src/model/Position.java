@@ -46,6 +46,10 @@ public class Position {
   }
 
   @Override
+  public String toString() {
+    return "(" + this.row + "," + this.col + ")";
+  }
+  @Override
   public boolean equals(Object other) {
     if (other instanceof Position) {
       Position otherPos = (Position) other;

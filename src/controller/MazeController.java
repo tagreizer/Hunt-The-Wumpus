@@ -1,21 +1,27 @@
 package controller;
 
 
+import java.io.InputStreamReader;
 import model.Direction;
 import model.IMaze;
 import model.MazeBuilder;
+import model.Position;
 import view.IMazeView;
 import view.SwingMazeCreator;
 import view.SwingMazeView;
+import view.TextMazeView;
+import view.ViewStyle;
 
 /**
  * Represents a controller and a listener for a maze/wumpus game.
  */
 public class MazeController implements IMazeController, EventController {
+
   private IMaze model;
   private IMazeView view;
   private boolean modelChanged;
   private boolean creatingNewGame;
+  private ViewStyle remakeStyle;
 
   /**
    * Creates the controller/listener for the given view and model.
@@ -29,6 +35,8 @@ public class MazeController implements IMazeController, EventController {
     this.modelChanged = true;
     this.view.setEventController(this);
     this.creatingNewGame = false;
+    //By default if the view is remade it will be with a swing option.
+    this.remakeStyle = ViewStyle.SWING;
 
 
   }
@@ -36,12 +44,17 @@ public class MazeController implements IMazeController, EventController {
   @Override
   public void runGame() {
 
-
     while (true) {
       if (creatingNewGame) {
 
         if (this.model != null) {
-          this.view = new SwingMazeView();
+          if (this.remakeStyle == ViewStyle.SWING) {
+            this.view = new SwingMazeView();
+          }
+          if (this.remakeStyle == ViewStyle.TEXT) {
+            this.view = new TextMazeView(System.out, new InputStreamReader(System.in));
+          }
+
           this.view.setEventController(this);
           this.creatingNewGame = false;
         } else {
@@ -113,6 +126,19 @@ public class MazeController implements IMazeController, EventController {
   }
 
   @Override
+  public void movePlayer(Position position) {
+    try {
+      this.model.movePlayer(position);
+      this.modelChanged = true;
+    } catch (IllegalArgumentException e) {
+      this.view.displayError("Illegal move, please try again in a valid direction.");
+
+    } catch (IllegalStateException e) {
+      this.view.displayError("You should not be able to move the game is over.");
+    }
+  }
+
+  @Override
   public void shootArrow(Direction dir, int distance) {
     try {
       this.model.fireArrow(dir, distance);
@@ -133,10 +159,11 @@ public class MazeController implements IMazeController, EventController {
   }
 
   @Override
-  public void newGame() {
+  public void newGame(ViewStyle style) {
     //sets params that say the game will restart and there will be a new one
     this.model = null;
     this.creatingNewGame = true;
+    this.remakeStyle = style;
 
     //shuts down the old window
     this.view.close();
@@ -163,11 +190,13 @@ public class MazeController implements IMazeController, EventController {
    * A runnable to that creates an object to create a new maze with.
    */
   private class newGameThreadClass implements Runnable {
+
     IMaze model;
     MazeController controller;
 
     /**
      * Creates a newGameThreadClass and assigns the controller to give the model to.
+     *
      * @param controller the controller to give the model to.
      */
     private newGameThreadClass(MazeController controller) {

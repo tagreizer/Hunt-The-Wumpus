@@ -3,32 +3,36 @@ package view;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 
 import controller.EventController;
-import model.MazeBuilder;
 
-public class RestartAndTurnPanel extends JPanel implements ActionListener {
+/**
+ * The panel that contains the buttons to restart and create a new game. Also shows the turn
+ * number.
+ */
+public final class RestartAndTurnPanel extends JPanel implements ActionListener {
 
-  private JFrame parentPanel;
-  private JButton restart;
-  private JButton newGame;
-  private JTextField playerTurn;
+  private final JFrame parentPanel;
+  private final JTextField playerTurn;
   private EventController listener;
 
+  /**
+   * Creates a new panel for restarting and new games. Is given the parent so it can refocus to it.
+   *
+   * @param parentPanel the panel to refocus to after button clicks.
+   */
   public RestartAndTurnPanel(JFrame parentPanel) {
     super();
     this.parentPanel = parentPanel;
     this.setPreferredSize(new Dimension(200, 100));
     this.setBackground(Color.GRAY);
-    restart = new JButton("Restart Game");
+    JButton restart = new JButton("Restart Game");
     restart.setActionCommand("Restart");
     restart.addActionListener(this);
-    newGame = new JButton("New Game");
+    JButton newGame = new JButton("New Game");
     newGame.setActionCommand("New Game");
     newGame.addActionListener(this);
 
@@ -48,13 +52,23 @@ public class RestartAndTurnPanel extends JPanel implements ActionListener {
     this.add(turnContainer);
   }
 
+  /**
+   * Sets the event listener for the panel. Used to signal to restart and make new games.
+   *
+   * @param listener the listener.
+   */
   void setEventListener(EventController listener) {
     this.listener = listener;
 
   }
 
+  /**
+   * Sets the player turn.
+   *
+   * @param playerTurn the player turn.
+   */
   void setPlayerTurn(int playerTurn) {
-    this.playerTurn.setText("Player"+playerTurn);
+    this.playerTurn.setText("Player" + playerTurn);
   }
 
   @Override
@@ -65,15 +79,8 @@ public class RestartAndTurnPanel extends JPanel implements ActionListener {
         parentPanel.requestFocus();
         break;
       case "New Game":
-        //parentPanel.dispatchEvent(new WindowEvent(parentPanel, WindowEvent.WINDOW_CLOSING));
-        //parentPanel.setVisible(false);
-
-
-
-          listener.newGame();
-
-
-          break;
+        listener.newGame(ViewStyle.SWING);
+        break;
       default:
         parentPanel.requestFocus();
 
