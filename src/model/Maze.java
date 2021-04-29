@@ -202,7 +202,7 @@ public class Maze implements IMaze {
     if (arrowCount < 1) {
       throw new IllegalArgumentException("A player must have a positive amount of arrows");
     }
-    if (players < 0 || players > 2) {
+    if (players <= 0 || players > 2) {
       throw new IllegalArgumentException("Currently only supports 1 or 2 players");
     }
     this.restartParams =

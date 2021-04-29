@@ -318,9 +318,9 @@ public class TextMazeView implements IMazeView {
     while (true) {
       while (scanner.hasNext()) {
         try {
-          num = scanner.nextInt();
+          num = Integer.parseInt(scanner.next());
           return num;
-        } catch (InputMismatchException e) {
+        } catch (InputMismatchException | NumberFormatException e) {
           this.outputString("Please enter an valid integer: ");
         }
 

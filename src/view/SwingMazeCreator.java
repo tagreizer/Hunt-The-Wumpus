@@ -1,5 +1,6 @@
 package view;
 
+import controller.EventController;
 import model.IMaze;
 import model.MazeBuilder;
 
@@ -28,6 +29,7 @@ import javax.swing.border.Border;
 public final class SwingMazeCreator extends JFrame implements ActionListener {
 
   private boolean stillCreating;
+  private EventController listener;
   private final MazeBuilder builder;
   private final EntryBox[] entryBoxes;
   private final JCheckBox perfect;
@@ -49,16 +51,16 @@ public final class SwingMazeCreator extends JFrame implements ActionListener {
     this.setLayout(myLayout);
 
     this.entryBoxes = new EntryBox[]{new EntryBox("Rows", true),
-        new EntryBox("Cols", true),
-        new EntryBox("StartRow", true),
-        new EntryBox("StartCol", true),
-        new EntryBox("GoalRow", true),
-        new EntryBox("GoalCol", true),
-        new EntryBox("Bats", true),
-        new EntryBox("Pits", true),
-        new EntryBox("WallsRemaining", false),
-        new EntryBox("ArrowCount", false),
-        new EntryBox("Seed", true)
+            new EntryBox("Cols", true),
+            new EntryBox("StartRow", true),
+            new EntryBox("StartCol", true),
+            new EntryBox("GoalRow", true),
+            new EntryBox("GoalCol", true),
+            new EntryBox("Bats", true),
+            new EntryBox("Pits", true),
+            new EntryBox("WallsRemaining", false),
+            new EntryBox("ArrowCount", false),
+            new EntryBox("Seed", true)
     };
     for (EntryBox box : this.entryBoxes) {
       this.add(box);
@@ -92,35 +94,11 @@ public final class SwingMazeCreator extends JFrame implements ActionListener {
   }
 
   /**
-   * The driver for this GUI, it does not use a controller and runs on its own. Once finished this
-   * will return a built maze object. If the maze cannot be built according to the spec it will
-   * display an error and allow the user to try again.
-   *
-   * @return the maze it creates
+   * Makes this gui visible, it will then allow interaction and creation of a maze.
    */
-  public IMaze create() {
-    IMaze model;
-    while (true) {
-      this.setVisible(true);
-      this.repaint();
-
-      if (!this.stillCreating) {
-        try {
-
-          model = this.build();
-          break;
-
-        } catch (IllegalArgumentException e) {
-          this.stillCreating = true;
-          JOptionPane.showMessageDialog(this, e.getMessage(),
-              "WHOOPSY",
-              JOptionPane.ERROR_MESSAGE);
-        }
-
-      }
-    }
-    this.dispose();
-    return model;
+  public void create() {
+    this.setVisible(true);
+    this.repaint();
 
 
   }
@@ -193,10 +171,31 @@ public final class SwingMazeCreator extends JFrame implements ActionListener {
     return builder.build();
   }
 
+  /**
+   * Sets the listener, so this knows who to give the built model too.
+   * @param eventController the listener.
+   */
+  public void setEventController(EventController eventController) {
+    this.listener = eventController;
+  }
+
   @Override
   public void actionPerformed(ActionEvent e) {
+    IMaze model;
     if (e.getActionCommand().equals("create Maze")) {
-      this.stillCreating = false;
+      try {
+
+        model = this.build();
+        this.listener.useModel(model);
+        this.dispose();
+
+
+      } catch (IllegalArgumentException exception) {
+        this.stillCreating = true;
+        JOptionPane.showMessageDialog(this, exception.getMessage(),
+                "WHOOPSY",
+                JOptionPane.ERROR_MESSAGE);
+      }
     }
 
   }
@@ -206,10 +205,10 @@ public final class SwingMazeCreator extends JFrame implements ActionListener {
    */
   private class EntryBox extends JPanel implements ActionListener {
 
-    private String name;
-    private JTextField textField;
-    private JCheckBox checkBox;
-    private boolean allowRandom;
+    private final String name;
+    private final JTextField textField;
+    private final JCheckBox checkBox;
+    private final boolean allowRandom;
     private boolean isRandom;
 
 
@@ -230,7 +229,7 @@ public final class SwingMazeCreator extends JFrame implements ActionListener {
       this.checkBox.addActionListener(this);
 
       this.setUpTextBox(
-          new Dimension(50, 40), new Dimension(30, 20));
+              new Dimension(50, 40), new Dimension(30, 20));
 
     }
 

@@ -1,5 +1,5 @@
 import controller.IMazeController;
-import controller.MazeController;
+import controller.TextMazeController;
 
 import model.IMaze;
 import model.Maze;
@@ -27,7 +27,7 @@ public class TextViewTests {
     StringBuilder out = new StringBuilder("");
     IMaze m = new Maze(8, 8, true, 0, 0, 7, 7, 10, 10, 325, 2);
     IMazeView view = new TextMazeView(out, in);
-    IMazeController controller = new MazeController(m, view);
+    IMazeController controller = new TextMazeController(m, view);
     controller.runGame();
     assertEquals("Player1's Effects:\n"
         + "Player1's turn:\n"
@@ -113,7 +113,7 @@ public class TextViewTests {
     StringBuilder out = new StringBuilder("");
     IMaze m = new Maze(8, 8, true, 0, 0, 7, 7, 10, 10, 325, 2);
     IMazeView view = new TextMazeView(out, in);
-    IMazeController controller = new MazeController(m, view);
+    IMazeController controller = new TextMazeController(m, view);
     controller.runGame();
     assertEquals("Player1's Effects:\n"
         + "Player1's turn:\n"
@@ -175,7 +175,7 @@ public class TextViewTests {
     StringBuilder out = new StringBuilder("");
     IMaze m = new Maze(5, 5, true, 0, 0, 4, 4, 5, 20, 325, 2);
     IMazeView view = new TextMazeView(out, in);
-    IMazeController controller = new MazeController(m, view);
+    IMazeController controller = new TextMazeController(m, view);
     controller.runGame();
     assertEquals("Player1's Effects:\n"
         + "Player1's turn:\n"
@@ -202,7 +202,7 @@ public class TextViewTests {
     StringBuilder out = new StringBuilder("");
     IMaze m = new Maze(8, 8, true, 0, 0, 7, 7, 10, 10, 325, 2);
     IMazeView view = new TextMazeView(out, in);
-    IMazeController controller = new MazeController(m, view);
+    IMazeController controller = new TextMazeController(m, view);
     controller.runGame();
     assertEquals("Player1's Effects:\n"
         + "Player1's turn:\n"
@@ -237,7 +237,7 @@ public class TextViewTests {
     StringBuilder out = new StringBuilder("");
     IMaze m = new Maze(8, 8, true, 0, 0, 7, 7, 10, 10, 325, 2);
     IMazeView view = new TextMazeView(out, in);
-    IMazeController controller = new MazeController(m, view);
+    IMazeController controller = new TextMazeController(m, view);
     controller.runGame();
     assertEquals("Player1's Effects:\n"
         + "Player1's turn:\n"
@@ -274,7 +274,7 @@ public class TextViewTests {
     StringBuilder out = new StringBuilder("");
     IMaze m = new Maze(8, 8, true, 0, 0, 7, 7, 10, 10, 325, 2, 2);
     IMazeView view = new TextMazeView(out, in);
-    IMazeController controller = new MazeController(m, view);
+    IMazeController controller = new TextMazeController(m, view);
     controller.runGame();
     assertEquals("Player1's Effects:\n"
         + "Player2's Effects:\n"

@@ -1,8 +1,8 @@
 package controller;
 
 import model.Direction;
+import model.IMaze;
 import model.Position;
-import view.ViewStyle;
 
 
 /**
@@ -41,9 +41,10 @@ public interface EventController {
   /**
    * Signals that the event controller should start a new game.
    *
-   * @param style the type of view used to display after starting.
    */
-  void newGame(ViewStyle style);
+  void newGame();
+
+  void useModel(IMaze model);
 
 
 }

@@ -40,6 +40,7 @@ public final class MazeBuilder {
     this.pitsPercentage = 10;
     this.seed = new Random().nextLong();
     this.arrowCount = 2;
+    this.playerCount = 1;
   }
 
   /**

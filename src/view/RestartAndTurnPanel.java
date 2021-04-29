@@ -86,7 +86,7 @@ public final class RestartAndTurnPanel extends JPanel implements ActionListener 
         parentPanel.requestFocus();
         break;
       case "New Game":
-        listener.newGame(ViewStyle.SWING);
+        listener.newGame();
         break;
       default:
         parentPanel.requestFocus();

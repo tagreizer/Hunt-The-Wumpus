@@ -1,11 +1,11 @@
 import java.io.InputStreamReader;
 
 import controller.IMazeController;
-import controller.MazeController;
+import controller.TextMazeController;
+import controller.SwingMazeController;
 import model.IMaze;
 import model.MazeBuilder;
 import view.IMazeView;
-import view.SwingMazeCreator;
 import view.SwingMazeView;
 import view.TextMazeView;
 import view.ViewStyle;
@@ -175,19 +175,21 @@ public final class HuntTheWumpus {
       }
     }
     IMaze model = null;
+    IMazeController controller = null;
     if (usingTextView) {
       try {
         model = mazeBuilder.build();
+        controller = new TextMazeController(model, view);
       } catch (Exception e) {
         System.out.println(e.getMessage());
         System.exit(0);
       }
     } else {
-      SwingMazeCreator swingMazeCreator = new SwingMazeCreator(new MazeBuilder());
-      model = swingMazeCreator.create();
+      controller = new SwingMazeController( view);
+
     }
 
-    IMazeController controller = new MazeController(model, view);
+
     controller.runGame();
 
 
