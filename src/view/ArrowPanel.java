@@ -3,12 +3,18 @@ package view;
 import controller.EventController;
 import model.Direction;
 
-import javax.swing.*;
+
+import javax.swing.JPanel;
+import javax.swing.JFrame;
+import javax.swing.JButton;
+import javax.swing.JTextField;
+import javax.swing.BorderFactory;
 import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicArrowButton;
 
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -185,7 +191,8 @@ final class ArrowPanel extends JPanel implements ActionListener {
 
     // Keystrokes can only be logged by the focused frame. JFrames cannot have their focus locked,
     // and if another panel is interacted with the frame loses focus.
-    // Therefore this is needed to reset the focus to the main frame to allow keystrokes to be registered
+    // Therefore this is needed to reset the focus to the main frame to allow keystrokes
+    // to be registered
 
     this.parentPanel.requestFocus();
 
@@ -211,7 +218,7 @@ final class ArrowPanel extends JPanel implements ActionListener {
   /**
    * Sets the amount of arrows in the arrows left panel.
    *
-   * @param arrowAmount
+   * @param arrowAmount the amount of arrows to display.
    */
   void setArrowAmount(int arrowAmount) {
     this.arrowAmountText.setText(String.valueOf(arrowAmount));

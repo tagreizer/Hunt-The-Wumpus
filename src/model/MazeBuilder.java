@@ -6,7 +6,7 @@ import java.util.Random;
 /**
  * A builder for a maze object, used by the main function to build a maze object on the fly.
  */
-public class MazeBuilder {
+public final class MazeBuilder {
   private int rows;
   private int cols;
   private int wallsRemaining;
@@ -102,7 +102,7 @@ public class MazeBuilder {
   }
 
   /**
-   * Sets the starting row
+   * Sets the starting row.
    *
    * @param sRow the starting row
    */
@@ -111,7 +111,7 @@ public class MazeBuilder {
   }
 
   /**
-   * Sets the starting col
+   * Sets the starting col.
    *
    * @param sCol the starting col
    */
@@ -120,7 +120,7 @@ public class MazeBuilder {
   }
 
   /**
-   * Sets the goal row
+   * Sets the goal row.
    *
    * @param gRow the goal row
    */
@@ -129,7 +129,7 @@ public class MazeBuilder {
   }
 
   /**
-   * Sets the goal col
+   * Sets the goal col.
    *
    * @param gCol the goal col
    */
@@ -151,7 +151,7 @@ public class MazeBuilder {
    */
   public void randomizeSCol() {
     this.sCol = new Random().nextInt(this.cols);
-    ;
+
   }
 
   /**
@@ -166,7 +166,8 @@ public class MazeBuilder {
 
     do {
       this.gRow = new Random().nextInt(this.rows);
-    } while (this.gRow == sRow);
+    }
+    while (this.gRow == sRow);
 
   }
 
@@ -181,7 +182,8 @@ public class MazeBuilder {
     }
     do {
       this.gCol = new Random().nextInt(this.cols);
-    } while (this.gCol == sCol);
+    }
+    while (this.gCol == sCol);
   }
 
   /**
@@ -219,14 +221,14 @@ public class MazeBuilder {
   }
 
   /**
-   * Randomizes the bats percentage between 0 and 30%
+   * Randomizes the bats percentage between 0 and 30%.
    */
   public void randomizeBatsPercentage() {
     this.batsPercentage = new Random().nextInt(30);
   }
 
   /**
-   * Randomizes the pits percentage between 0 and 30%
+   * Randomizes the pits percentage between 0 and 30%.
    */
   public void randomizePitsPercentage() {
     this.pitsPercentage = new Random().nextInt(30);

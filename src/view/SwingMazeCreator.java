@@ -3,11 +3,23 @@ package view;
 import model.IMaze;
 import model.MazeBuilder;
 
-import javax.swing.*;
-import javax.swing.border.Border;
-import java.awt.*;
+
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+
+import javax.swing.JPanel;
+import javax.swing.JFrame;
+import javax.swing.JButton;
+import javax.swing.JTextField;
+import javax.swing.WindowConstants;
+import javax.swing.JOptionPane;
+
+import javax.swing.JCheckBox;
+import javax.swing.BorderFactory;
+import javax.swing.border.Border;
 
 /**
  * A GUI that allows the user to specify attributes for a new maze, and build it. This runs on its

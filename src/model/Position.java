@@ -49,6 +49,7 @@ public class Position {
   public String toString() {
     return "(" + this.row + "," + this.col + ")";
   }
+
   @Override
   public boolean equals(Object other) {
     if (other instanceof Position) {

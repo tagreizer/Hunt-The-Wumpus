@@ -9,11 +9,11 @@ import java.util.List;
  * traverses the maze and can collect and use gold. Players have no notion of the rooms they are in,
  * only the maze knows, the player just knows its location and gold stats.
  */
-class Player {
+final class Player {
   private Position position;
   private int arrowAmount;
   private final List<PlayerEffect> recentEffects;
-  private int playerNum;
+  private final int playerNum;
 
 
   /**
@@ -22,7 +22,7 @@ class Player {
    * @param row        the row the player starts at.
    * @param col        the col the player starts at.
    * @param arrowCount the amount of arrows the player starts with.
-   * @param playerNum
+   * @param playerNum  the number identifier for the player
    */
   Player(int row, int col, int arrowCount, int playerNum) {
     this.position = new Position(row, col);
@@ -112,6 +112,7 @@ class Player {
 
   /**
    * Returns the players number.
+   *
    * @return the players number.
    */
   int getPlayerNum() {

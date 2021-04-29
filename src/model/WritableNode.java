@@ -34,7 +34,8 @@ class WritableNode extends ReadableNode implements IWritableNode {
 
   @Override
   public void shouldIContainPlayer(boolean contains, int playerNum) {
-    RoomAttribute hasPlayer = playerNum == 1 ? RoomAttribute.HAS_PLAYER1 : RoomAttribute.HAS_PLAYER2;
+    RoomAttribute hasPlayer = playerNum == 1 ?
+            RoomAttribute.HAS_PLAYER1 : RoomAttribute.HAS_PLAYER2;
     if (contains && !this.attributes.contains(hasPlayer)) {
       this.attributes.add(hasPlayer);
     }

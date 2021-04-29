@@ -19,7 +19,7 @@ public interface IWritableNode extends IReadableNode {
    * Sets if the player is in this node or not.
    *
    * @param contains whether or not this node will contain the player.
-   * @param playerNum
+   * @param playerNum which player number the node should contain.
    */
   void shouldIContainPlayer(boolean contains, int playerNum);
 

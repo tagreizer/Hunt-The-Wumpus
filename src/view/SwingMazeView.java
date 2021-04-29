@@ -1,11 +1,20 @@
 package view;
 
-import java.awt.*;
-
-import java.awt.event.*;
+import java.awt.Dimension;
+import java.awt.event.KeyListener;
+import java.awt.event.KeyEvent;
+import java.awt.BorderLayout;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+
+import javax.swing.WindowConstants;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+
+
+
+
 
 import controller.EventController;
 import model.Direction;
@@ -88,12 +97,12 @@ public class SwingMazeView extends JFrame implements IMazeView, KeyListener {
 
   @Override
   public void setPlayerPos(Position pos) {
-//not used in this view type.
+    //not used in this view type.
   }
 
   @Override
   public void setPossibleMoves(List<Direction> directions) {
-//not used in this view type.
+    //not used in this view type.
   }
 
   @Override
@@ -164,7 +173,7 @@ public class SwingMazeView extends JFrame implements IMazeView, KeyListener {
 
   @Override
   public void displayError(String error) {
-
+    //swing version doesnt display issues. just lets them slide.
   }
 
   @Override

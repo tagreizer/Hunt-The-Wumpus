@@ -1,7 +1,10 @@
 package view;
 
-import java.awt.*;
 
+import java.awt.Graphics2D;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -11,7 +14,9 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
+
+import javax.swing.JPanel;
+
 
 import controller.EventController;
 import model.Direction;
@@ -185,6 +190,9 @@ final class NodePanel extends JPanel implements MouseListener {
         case HAS_PLAYER2:
 
           attributeFileName.append("player2");
+          break;
+        default:
+          //does nothing
           break;
       }
       attributeFileName.append(".png");

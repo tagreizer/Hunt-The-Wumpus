@@ -16,12 +16,10 @@ public class Maze implements IMaze {
 
   private final IWritableNode[][] board;
   private final List<IEdge> edges;
-  private final Player player1;
-  private final Player player2;
-  private Player[] players;
+  private final Player[] players;
   private int turn;
   private final long seed;
-  private int[] restartParams;
+  private final int[] restartParams;
 
 
   /**
@@ -36,7 +34,7 @@ public class Maze implements IMaze {
    * @param gCol       the goal col
    */
   public Maze(int rows, int cols, boolean isWrapping,
-      int sRow, int sCol, int gRow, int gCol) {
+              int sRow, int sCol, int gRow, int gCol) {
     this(rows, cols, isWrapping, sRow, sCol, gRow, gCol, new Random().nextLong());
   }
 
@@ -54,10 +52,10 @@ public class Maze implements IMaze {
    * @param seed       the seed to use for GENERATION
    */
   public Maze(int rows, int cols, boolean isWrapping,
-      int sRow, int sCol, int gRow, int gCol, long seed) {
+              int sRow, int sCol, int gRow, int gCol, long seed) {
     this(rows, cols, isWrapping ? (rows * cols) + 1
-            : ((cols * (rows - 1)) + (rows * (cols - 1))) - (rows * cols) + 1,
-        isWrapping, sRow, sCol, gRow, gCol, seed);
+                    : ((cols * (rows - 1)) + (rows * (cols - 1))) - (rows * cols) + 1,
+            isWrapping, sRow, sCol, gRow, gCol, seed);
   }
 
   /**
@@ -73,7 +71,7 @@ public class Maze implements IMaze {
    * @param gCol           the goal col
    */
   public Maze(int rows, int cols, int wallsRemaining, boolean isWrapping,
-      int sRow, int sCol, int gRow, int gCol) {
+              int sRow, int sCol, int gRow, int gCol) {
     this(rows, cols, wallsRemaining, isWrapping, sRow, sCol, gRow, gCol, new Random().nextLong());
   }
 
@@ -91,7 +89,7 @@ public class Maze implements IMaze {
    * @param seed           the seed for the maze to build its edges from
    */
   public Maze(int rows, int cols, int wallsRemaining, boolean isWrapping,
-      int sRow, int sCol, int gRow, int gCol, long seed) {
+              int sRow, int sCol, int gRow, int gCol, long seed) {
     this(rows, cols, wallsRemaining, isWrapping, sRow, sCol, gRow, gCol, 0, 0, seed, 2);
 
   }
@@ -110,11 +108,11 @@ public class Maze implements IMaze {
    * @param arrowCount the amount of arrows the player gets
    */
   public Maze(int rows, int cols, boolean isWrapping,
-      int sRow, int sCol, int gRow, int gCol,
-      int percentBats, int percentPits, long seed, int arrowCount) {
+              int sRow, int sCol, int gRow, int gCol,
+              int percentBats, int percentPits, long seed, int arrowCount) {
     this(rows, cols, isWrapping ? (rows * cols) + 1
-            : ((cols * (rows - 1)) + (rows * (cols - 1))) - (rows * cols) + 1,
-        isWrapping, sRow, sCol, gRow, gCol, percentBats, percentPits, seed, arrowCount);
+                    : ((cols * (rows - 1)) + (rows * (cols - 1))) - (rows * cols) + 1,
+            isWrapping, sRow, sCol, gRow, gCol, percentBats, percentPits, seed, arrowCount);
 
   }
 
@@ -135,12 +133,12 @@ public class Maze implements IMaze {
    * @param percentPits the percentage of nodes with pits
    */
   public Maze(int rows, int cols, boolean isWrapping,
-      int sRow, int sCol, int gRow, int gCol,
-      int percentBats, int percentPits, long seed, int arrowCount, int playerCount) {
+              int sRow, int sCol, int gRow, int gCol,
+              int percentBats, int percentPits, long seed, int arrowCount, int playerCount) {
     this(rows, cols, isWrapping ? (rows * cols) + 1
-            : ((cols * (rows - 1)) + (rows * (cols - 1))) - (rows * cols) + 1,
-        isWrapping, sRow, sCol, gRow, gCol, percentBats, percentPits, seed, arrowCount,
-        playerCount);
+                    : ((cols * (rows - 1)) + (rows * (cols - 1))) - (rows * cols) + 1,
+            isWrapping, sRow, sCol, gRow, gCol, percentBats, percentPits, seed, arrowCount,
+            playerCount);
 
   }
 
@@ -161,10 +159,10 @@ public class Maze implements IMaze {
    * @param percentPits    the percentage of nodes with pits
    */
   public Maze(int rows, int cols, int wallsRemaining, boolean isWrapping,
-      int sRow, int sCol, int gRow, int gCol,
-      int percentBats, int percentPits, long seed, int arrowCount) {
+              int sRow, int sCol, int gRow, int gCol,
+              int percentBats, int percentPits, long seed, int arrowCount) {
     this(rows, cols, wallsRemaining,
-        isWrapping, sRow, sCol, gRow, gCol, percentBats, percentPits, seed, arrowCount, 1);
+            isWrapping, sRow, sCol, gRow, gCol, percentBats, percentPits, seed, arrowCount, 1);
 
   }
 
@@ -186,13 +184,13 @@ public class Maze implements IMaze {
    * @param percentPits    the percentage of nodes with pits
    */
   public Maze(int rows, int cols, int wallsRemaining, boolean isWrapping,
-      int sRow, int sCol, int gRow, int gCol,
-      int percentBats, int percentPits, long seed, int arrowCount, int players) {
+              int sRow, int sCol, int gRow, int gCol,
+              int percentBats, int percentPits, long seed, int arrowCount, int players) {
     if (rows < 1 || cols < 1 || rows + cols == 2) {
       throw new IllegalArgumentException("You must have a maze of more than 1 room");
     }
     if (sRow >= rows || sRow < 0 || sCol >= cols || sCol < 0
-        || gRow >= rows || gRow < 0 || gCol >= cols || gCol < 0) {
+            || gRow >= rows || gRow < 0 || gCol >= cols || gCol < 0) {
       throw new IllegalArgumentException("Start and end must be on the maze board");
     }
     if (sRow == gRow && sCol == gCol) {
@@ -207,8 +205,9 @@ public class Maze implements IMaze {
     if (players < 0 || players > 2) {
       throw new IllegalArgumentException("Currently only supports 1 or 2 players");
     }
-    this.restartParams = new int[]{rows, cols, wallsRemaining, isWrapping ? 1 : 0, sRow, sCol,
-        gRow, gCol, percentBats, percentPits, arrowCount, players};
+    this.restartParams =
+            new int[]{rows, cols, wallsRemaining, isWrapping ? 1 : 0, sRow, sCol,
+              gRow, gCol, percentBats, percentPits, arrowCount, players};
     this.board = new IWritableNode[rows][cols];
     this.edges = new ArrayList<>();
     int totalWalls;
@@ -220,7 +219,7 @@ public class Maze implements IMaze {
     int egdesNeeded = totalWalls - wallsRemaining;
     if (egdesNeeded < (cols * rows) - 1) {
       throw new IllegalArgumentException("There are two many walls remaining " +
-          "for the maze to be completable");
+              "for the maze to be completable");
     }
 
     //Generates the graph of nodes building pieces
@@ -248,8 +247,8 @@ public class Maze implements IMaze {
 
     //rest of maze data
 
-    this.player1 = new Player(sRow, sCol, arrowCount, 1);
-    this.player2 = new Player(sRow, sCol, arrowCount, 2);
+    Player player1 = new Player(sRow, sCol, arrowCount, 1);
+    Player player2 = new Player(sRow, sCol, arrowCount, 2);
     this.players[0] = player1;
     if (players == 2) {
 
@@ -319,7 +318,7 @@ public class Maze implements IMaze {
     for (int r = 0; r < this.board.length - 1; r++) {
       for (int c = 0; c < this.board[r].length; c++) {
         IEdge edge = new Edge(rand.nextInt(300), this.board[r][c],
-            this.board[r + 1][c], Direction.SOUTH);
+                this.board[r + 1][c], Direction.SOUTH);
         edgeWorkList.add(edge);
       }
     }
@@ -327,7 +326,7 @@ public class Maze implements IMaze {
     for (int r = 0; r < this.board.length; r++) {
       for (int c = 0; c < this.board[r].length - 1; c++) {
         IEdge edge = new Edge(rand.nextInt(300), this.board[r][c],
-            this.board[r][c + 1], Direction.EAST);
+                this.board[r][c + 1], Direction.EAST);
 
         edgeWorkList.add(edge);
       }
@@ -340,12 +339,12 @@ public class Maze implements IMaze {
       int maxCol = this.board[maxRow].length - 1;
       for (int c = 0; c < this.board[maxRow].length; c++) {
         IEdge edge = new Edge(rand.nextInt(300), this.board[maxRow][c],
-            this.board[0][c], Direction.SOUTH);
+                this.board[0][c], Direction.SOUTH);
         edgeWorkList.add(edge);
       }
       for (int r = 0; r < this.board.length; r++) {
         IEdge edge = new Edge(rand.nextInt(300), this.board[r][maxCol],
-            this.board[r][0], Direction.EAST);
+                this.board[r][0], Direction.EAST);
         edgeWorkList.add(edge);
       }
     }
@@ -365,7 +364,7 @@ public class Maze implements IMaze {
     for (int r = 0; r < this.board.length; r++) {
       for (int c = 0; c < this.board[r].length; c++) {
         if (this.board[r][c].getRoomType() == RoomType.EMPTY && this.board[r][c]
-            .getConnectedDirs().size() == 2) {
+                .getConnectedDirs().size() == 2) {
           this.board[r][c].setRoomType(RoomType.HALLWAY);
 
         }
@@ -440,7 +439,7 @@ public class Maze implements IMaze {
     List<IWritableNode> connectedRooms = new ArrayList<>();
     for (Direction dir : node.getConnectedDirs()) {
       connectedRooms.add(this.getConnectedNodeHelp(
-          this.handleWrap(this.updatePosFromDirection(node.getPosition(), dir)), dir));
+              this.handleWrap(this.updatePosFromDirection(node.getPosition(), dir)), dir));
 
     }
 
@@ -465,8 +464,8 @@ public class Maze implements IMaze {
       directions.remove(direction.opposite());
 
       return getConnectedNodeHelp(this
-              .handleWrap(this.updatePosFromDirection(position, directions.get(0))),
-          directions.get(0));
+                      .handleWrap(this.updatePosFromDirection(position, directions.get(0))),
+              directions.get(0));
     }
   }
 
@@ -553,7 +552,7 @@ public class Maze implements IMaze {
       player.clearEffects();
       Position playerLoc = player.getPosition();
       this.board[playerLoc.getRow()][playerLoc.getCol()]
-          .shouldIContainPlayer(false, player.getPlayerNum());
+              .shouldIContainPlayer(false, player.getPlayerNum());
       player.move(direction);
 
       playerLoc = handleWrap(player.getPosition());
@@ -561,12 +560,24 @@ public class Maze implements IMaze {
       this.roomEffect(this.board[playerLoc.getRow()][playerLoc.getCol()], direction);
       playerLoc = player.getPosition();
       this.board[playerLoc.getRow()][playerLoc.getCol()]
-          .shouldIContainPlayer(true, player.getPlayerNum());
+              .shouldIContainPlayer(true, player.getPlayerNum());
 
 
     } else {
       throw new IllegalArgumentException("The player cannot move in that direction");
     }
+  }
+
+
+  @Override
+  public void movePlayer(Position position) {
+    Direction direction = this.directionTo(this.choosePlayer(), position);
+    if (direction == null) {
+      throw new IllegalArgumentException("That player cannot move to that position.");
+    }
+
+    this.movePlayer(direction);
+
   }
 
   /**
@@ -581,24 +592,13 @@ public class Maze implements IMaze {
     Direction dir = null;
     for (Direction direction : this.possiblePlayerMoves()) {
       Position connectedPos = this.handleWrap(
-          this.updatePosFromDirection(player.getPosition(), direction));
+              this.updatePosFromDirection(player.getPosition(), direction));
       if (this.getConnectedNodeHelp(connectedPos, direction).getPosition().equals(position)) {
         dir = direction;
       }
     }
 
     return dir;
-  }
-
-  @Override
-  public void movePlayer(Position position) {
-    Direction direction = this.directionTo(this.choosePlayer(), position);
-    if (direction == null) {
-      throw new IllegalArgumentException("That player cannot move to that position.");
-    }
-
-    this.movePlayer(direction);
-
   }
 
   /**
@@ -661,7 +661,7 @@ public class Maze implements IMaze {
   private void roomEffect(IWritableNode node, Direction dir) {
     RoomType curRoom = node.getRoomType();
     if (node.beenVisited() && node.getRoomType() != RoomType.HALLWAY
-        && node.getRoomType() != RoomType.WUMPUS) {
+            && node.getRoomType() != RoomType.WUMPUS) {
       return;
     } else {
       node.visit();
@@ -710,7 +710,7 @@ public class Maze implements IMaze {
   private boolean telePlayer() {
     boolean foundLoc = false;
     Random r = new Random(this.seed * this.choosePlayer().getPosition().getRow()
-        * this.choosePlayer().getPosition().getCol());
+            * this.choosePlayer().getPosition().getCol());
     int tele = r.nextInt(2);
 
     if (tele == 0) {
@@ -721,7 +721,7 @@ public class Maze implements IMaze {
       int rowLoc = r.nextInt(this.board.length);
       int colLoc = r.nextInt(this.board[0].length);
       if (!Arrays.asList(RoomType.SUPERBAT, RoomType.SUPERBAT_AND_PIT, RoomType.HALLWAY)
-          .contains(this.board[rowLoc][colLoc].getRoomType())) {
+              .contains(this.board[rowLoc][colLoc].getRoomType())) {
         this.choosePlayer().setPosition(rowLoc, colLoc);
         this.roomEffect(this.board[rowLoc][colLoc], null);
         foundLoc = true;
@@ -785,8 +785,8 @@ public class Maze implements IMaze {
   private boolean isGameOver(Player player) {
     List<PlayerEffect> effects = player.getRecentEffects();
     return effects.contains(PlayerEffect.NO_ARROWS) || effects.contains(PlayerEffect.SHOT_WUMPUS)
-        || effects.contains(PlayerEffect.RAN_INTO_WUMPUS)
-        || effects.contains(PlayerEffect.FELL_INTO_PIT);
+            || effects.contains(PlayerEffect.RAN_INTO_WUMPUS)
+            || effects.contains(PlayerEffect.FELL_INTO_PIT);
   }
 
   @Override
@@ -847,9 +847,9 @@ public class Maze implements IMaze {
   @Override
   public IMaze restart() {
     return new Maze(restartParams[0], restartParams[1], restartParams[2],
-        restartParams[3] == 1, restartParams[4], restartParams[5], restartParams[6],
-        restartParams[7], restartParams[8], restartParams[9],
-        this.seed, restartParams[10], restartParams[11]);
+            restartParams[3] == 1, restartParams[4], restartParams[5], restartParams[6],
+            restartParams[7], restartParams[8], restartParams[9],
+            this.seed, restartParams[10], restartParams[11]);
   }
 
   @Override
@@ -881,7 +881,7 @@ public class Maze implements IMaze {
 
     if (this.board[endPos.getRow()][endPos.getCol()].getRoomType() == RoomType.HALLWAY) {
       List<Direction> dirs = new ArrayList<>(this.board[endPos.getRow()][endPos.getCol()]
-          .getConnectedDirs());
+              .getConnectedDirs());
       dirs.remove(dir.opposite());
       dir = dirs.get(0);
 

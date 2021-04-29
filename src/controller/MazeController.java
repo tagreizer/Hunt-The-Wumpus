@@ -2,6 +2,7 @@ package controller;
 
 
 import java.io.InputStreamReader;
+
 import model.Direction;
 import model.IMaze;
 import model.MazeBuilder;
@@ -15,7 +16,7 @@ import view.ViewStyle;
 /**
  * Represents a controller and a listener for a maze/wumpus game.
  */
-public class MazeController implements IMazeController, EventController {
+public final class MazeController implements IMazeController, EventController {
 
   private IMaze model;
   private IMazeView view;
@@ -64,8 +65,8 @@ public class MazeController implements IMazeController, EventController {
           //it just shuts down when the other thread is created. I chose creating an empty string
           //As i figured it wouldn't be taxing on the resources (I dont really know though).
           //If you know why this bug is happening could you leave a comment and explain.
-          //I dont have time to troubleshoot it more, and assume maybe this function is being garbage collected
-          //or something, but I have no idea otherwise.
+          //I dont have time to troubleshoot it more, and assume maybe this function is
+          // being garbage collected or something, but I have no idea otherwise.
           new String();
         }
 
@@ -168,7 +169,7 @@ public class MazeController implements IMazeController, EventController {
     //shuts down the old window
     this.view.close();
 
-    newGameThreadClass creator = new newGameThreadClass(this);
+    NewGameThreadClass creator = new NewGameThreadClass(this);
     Thread t = new Thread(creator);
     t.setPriority(Thread.MAX_PRIORITY);
     t.start();
@@ -189,7 +190,7 @@ public class MazeController implements IMazeController, EventController {
   /**
    * A runnable to that creates an object to create a new maze with.
    */
-  private class newGameThreadClass implements Runnable {
+  private class NewGameThreadClass implements Runnable {
 
     IMaze model;
     MazeController controller;
@@ -199,7 +200,7 @@ public class MazeController implements IMazeController, EventController {
      *
      * @param controller the controller to give the model to.
      */
-    private newGameThreadClass(MazeController controller) {
+    private NewGameThreadClass(MazeController controller) {
       this.model = null;
       this.controller = controller;
     }

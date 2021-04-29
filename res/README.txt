@@ -3,7 +3,6 @@ Design Decisions
 New Classes:
 
 
-
 View Classes::
 
 SwingMazeView Class (and its panel classes):
@@ -17,7 +16,10 @@ options to restart a maze, and to make a brand new maze. This panel also display
 as that needed to go somewhere and the arrow panel already handled alot. Keystrokes are handled by
 the SwingMazeView class and not the node panel. This is because to register keystrokes the panel
 must be in focus and it was simpler to have all its parent nodes refocus to the frame as a whole,
-and not specifically to the node panel. All images should be in the reasources directory
+and not specifically to the node panel. Invalid moves are ignored. Unlike the text version
+when a player tries to moves illegally this view type ignores it rather than displays an error.
+It would be very annoying to see an error everytime, and the player can instead just see that they
+didnt move. All images should be in the reasources directory
 
 SwingMazeCreator:
 This class doesn't really belong in any one package but I placed it in the view area. This is a
@@ -46,7 +48,8 @@ not extensive to support this, but small changes were made to things like game o
 sure each player has died or if one player has won. Users of the Maze class cannot specify which
 player does what. They can only specify that the player whos current turn it is does things. The
 model then handles which player it applies too. This decision was made so that turn order was
-strictly enforced.
+strictly enforced. Once a bat is triggered by one player it will not fly the second player to
+encounter it.
 
 Player Class:
 Players now have a tag to differentiate themselves with.
@@ -107,3 +110,22 @@ Followed by nothing:
 
 ------------------------------------------------------------
 
+Playing the game(GUI):
+
+To launch make sure the folder that contains the jar also contains the reasources folder with all
+the images.
+
+The green fairy is player one and the red one is player two (if doing a two person game)
+
+To move the current player can either press the arrow key in the direction they want to move or
+they can click on a room they want to move to. (they cannot click on halways to move, it must be
+the room).
+
+To fire arrows you select the direction on the left side and then tick the counter up or down for
+distance. Once you have your desired direction and distance click the fire arrow button to shoot
+the arrow.
+
+The text version will prompt the user with what they need to do.
+
+------------------------------------------------------------
+All parts of the program are complete and should run properly. 

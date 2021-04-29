@@ -193,7 +193,12 @@ public final class HuntTheWumpus {
 
   }
 
-  public static IMazeView chooseView(ViewStyle style) {
+  /**
+   * Selects the view to use for the program.
+   * @param style the view style
+   * @return the view to use.
+   */
+  private static IMazeView chooseView(ViewStyle style) {
     switch (style) {
       case TEXT:
         return new TextMazeView(System.out, new InputStreamReader(System.in));
