@@ -65,6 +65,7 @@ public class SwingMazeController extends TextMazeController {
     SwingMazeCreator creator = new SwingMazeCreator(new MazeBuilder());
     creator.setEventController(this);
     creator.create();
+    //Creates a new view to allow it to re adjust all the frame sizing
     this.view = new SwingMazeView();
     this.view.setEventController(this);
 

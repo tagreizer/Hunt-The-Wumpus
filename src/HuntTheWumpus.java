@@ -174,21 +174,19 @@ public final class HuntTheWumpus {
         }
       }
     }
-    IMaze model = null;
     IMazeController controller = null;
     if (usingTextView) {
       try {
-        model = mazeBuilder.build();
+        IMaze model = mazeBuilder.build();
         controller = new TextMazeController(model, view);
       } catch (Exception e) {
         System.out.println(e.getMessage());
         System.exit(0);
       }
     } else {
-      controller = new SwingMazeController( view);
+      controller = new SwingMazeController(view);
 
     }
-
 
     controller.runGame();
 
@@ -197,6 +195,7 @@ public final class HuntTheWumpus {
 
   /**
    * Selects the view to use for the program.
+   *
    * @param style the view style
    * @return the view to use.
    */

@@ -1,6 +1,11 @@
 Design Decisions
 -----------------------------------------------------------
 New Classes:
+Controller Classes::
+
+SwingMaze Controller Class:
+This is a controller that works for guis instead of text. It is an asynchronous contoller and
+inherits most of its code from the TextMazeController.
 
 
 View Classes::
@@ -22,15 +27,12 @@ It would be very annoying to see an error everytime, and the player can instead 
 didnt move. All images should be in the reasources directory
 
 SwingMazeCreator:
-This class doesn't really belong in any one package but I placed it in the view area. This is a
-gui that runs independently of a controller and will take user input, pass it to a builder class,
-and then build the maze. This object is recreated when new games are launched by the controller as
-well. This was created as a separate frame from the normal swing view because it did not fit, as
-the normal view doesnt concern it self with creating models.
+This is a gui that will create a maze based off of user input and send the model to
+the eventcontroller its linked to. It will also notify the player when invalid values are attempted
+to be used in making the maze, with the reason why they are invalid.
 
 ViewStyle Enum:
-This enum represents the different styles that the view can be rendered in. This is really only used
-in the MazeController which uses it to determine what style of view it should create a new game in.
+This enum represents the different styles that the view can be rendered in.
 
 
 -----------------------------------------------------------
@@ -66,10 +68,7 @@ a new game.
 MazeController Class:
 The main run loop for the controller has been refactored. It now allows for animation to continue
 after a game over if the view supports it. It can restart games(refreshing to a new model), and it
-can also create new games. To create new games it creates a new thread and launches a JSwing gui
-from there. This was because if the controller is called by a gui it is not on the main thread,
-it is on the JSwingEventDispatch thread, and guis have issues being launched from that. The
-controller just stalls the main thread while this runs.
+can also create new games. This has also been ranamed to the TextMazeController for clarity.
 
 IMaze View Interface:
 Many new setters were added to accommodate easily accessing information from the model. Neither
